@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</title>
+  <link rel="icon" href="./icon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&display=swap"
@@ -762,7 +763,10 @@
 
   <header>
     <h1>បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
-    <span id="event-date" contenteditable="true" style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px; cursor: text; outline: none;" title="ចុចទីនេះដើម្បីកែប្រែកាលបរិច្ឆេទ">ថ្ងៃសៅរ៍ អាទិត្យ ៤ ៥កើត ខែកត្តិក ឆ្នាំរោង ឆស័ក ព.ស.២៥៦៨ ត្រូវនឹងថ្ងៃទី១៤ ១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៤</span>
+    <span id="event-date" contenteditable="true"
+      style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px; cursor: text; outline: none;"
+      title="ចុចទីនេះដើម្បីកែប្រែកាលបរិច្ឆេទ">ថ្ងៃសៅរ៍ អាទិត្យ ៤ ៥កើត ខែកត្តិក ឆ្នាំរោង ឆស័ក ព.ស.២៥៦៨ ត្រូវនឹងថ្ងៃទី១៤
+      ១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៤</span>
     <div class="subtitle">សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
   </header>
 
@@ -997,14 +1001,14 @@
       window.google = {
         script: {
           run: {
-            withSuccessHandler: function(onSuccess) {
+            withSuccessHandler: function (onSuccess) {
               // We return a new proxy object so chain calls don't overwrite each other's callbacks
               return Object.assign({}, this, { _onSuccess: onSuccess });
             },
-            withFailureHandler: function(onFailure) {
+            withFailureHandler: function (onFailure) {
               return Object.assign({}, this, { _onFailure: onFailure });
             },
-            _callApi: function(method, args) {
+            _callApi: function (method, args) {
               const url = "https://script.google.com/macros/s/AKfycbxNkO0W-UgUzEg-PablCzRVrPAq4e1TIllKVcy4rHj8hrNhKqF2VHGqCC1pue9duME6/exec";
               fetch(url, {
                 method: 'POST',
@@ -1012,24 +1016,24 @@
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ method: method, args: args })
               })
-              .then(res => res.json())
-              .then(res => {
-                if (res.status === 'error') {
-                   if (this._onFailure) this._onFailure(res.message);
-                } else {
-                   if (this._onSuccess) this._onSuccess(res.data);
-                }
-              })
-              .catch(err => {
-                if (this._onFailure) this._onFailure(err.toString());
-              });
+                .then(res => res.json())
+                .then(res => {
+                  if (res.status === 'error') {
+                    if (this._onFailure) this._onFailure(res.message);
+                  } else {
+                    if (this._onSuccess) this._onSuccess(res.data);
+                  }
+                })
+                .catch(err => {
+                  if (this._onFailure) this._onFailure(err.toString());
+                });
             },
-            getData: function() { this._callApi('getData', Array.from(arguments)); },
-            addData: function() { this._callApi('addData', Array.from(arguments)); },
-            updateData: function() { this._callApi('updateData', Array.from(arguments)); },
-            deleteData: function() { this._callApi('deleteData', Array.from(arguments)); },
-            deleteMultipleData: function() { this._callApi('deleteMultipleData', Array.from(arguments)); },
-            reorderData: function() { this._callApi('reorderData', Array.from(arguments)); }
+            getData: function () { this._callApi('getData', Array.from(arguments)); },
+            addData: function () { this._callApi('addData', Array.from(arguments)); },
+            updateData: function () { this._callApi('updateData', Array.from(arguments)); },
+            deleteData: function () { this._callApi('deleteData', Array.from(arguments)); },
+            deleteMultipleData: function () { this._callApi('deleteMultipleData', Array.from(arguments)); },
+            reorderData: function () { this._callApi('reorderData', Array.from(arguments)); }
           }
         }
       };
@@ -1070,9 +1074,9 @@
       if (savedDate && dateEl) {
         dateEl.innerText = savedDate;
       }
-      
+
       if (dateEl) {
-        dateEl.addEventListener('input', function() {
+        dateEl.addEventListener('input', function () {
           localStorage.setItem('kathina_event_date', this.innerText);
         });
       }
