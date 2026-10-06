@@ -2,10 +2,45 @@ const SPREADSHEET_ID = '1NUnsAEktAnoxA5FT4uGw_N9MvQYYTZAbAIzgQmS--FI';
 // ផ្អែកលើរូបភាព ផ្ទាំងដែលកំពុងបើកមានឈ្មោះ "បញ្ជីម្ចាស់កឋិនទាន (1)"
 const SHEET_NAME = 'បញ្ជីម្ចាស់កឋិនទាន (1)';
 
-function doGet() {
+function doGet(e) {
+  // If requested as JSON API
+  if (e && e.parameter && e.parameter.api === 'true') {
+    const data = getData();
+    return ContentService.createTextOutput(JSON.stringify(data))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Otherwise, serve standard Web App HTML
+  // Note: Vercel uses index.html, but Apps Script still uses 'Index' (the name of the file in the GAS editor)
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+// Support POST requests from Vercel
+function doPost(e) {
+  try {
+    const payload = JSON.parse(e.postData.contents);
+    const method = payload.method;
+    const args = payload.args || [];
+    
+    let result = null;
+    
+    if (method === 'getData') result = getData();
+    else if (method === 'addData') result = addData(args[0]);
+    else if (method === 'updateData') result = updateData(args[0], args[1]);
+    else if (method === 'deleteData') result = deleteData(args[0]);
+    else if (method === 'deleteMultipleData') result = deleteMultipleData(args[0]);
+    else if (method === 'reorderData') result = reorderData(args[0], args[1], args[2]);
+    else throw new Error('Method not found: ' + method);
+
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: result }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 function getData() {

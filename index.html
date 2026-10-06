@@ -991,6 +991,51 @@
   </div>
 
   <script>
+    // --- VERCEL / LOCALHOST POLYFILL ---
+    // This allows the exact same code to run outside Google Apps Script (e.g. Vercel)
+    if (typeof google === 'undefined') {
+      window.google = {
+        script: {
+          run: {
+            withSuccessHandler: function(onSuccess) {
+              // We return a new proxy object so chain calls don't overwrite each other's callbacks
+              return Object.assign({}, this, { _onSuccess: onSuccess });
+            },
+            withFailureHandler: function(onFailure) {
+              return Object.assign({}, this, { _onFailure: onFailure });
+            },
+            _callApi: function(method, args) {
+              const url = "https://script.google.com/macros/s/AKfycbxNkO0W-UgUzEg-PablCzRVrPAq4e1TIllKVcy4rHj8hrNhKqF2VHGqCC1pue9duME6/exec";
+              fetch(url, {
+                method: 'POST',
+                // Using text/plain to avoid CORS OPTIONS preflight
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ method: method, args: args })
+              })
+              .then(res => res.json())
+              .then(res => {
+                if (res.status === 'error') {
+                   if (this._onFailure) this._onFailure(res.message);
+                } else {
+                   if (this._onSuccess) this._onSuccess(res.data);
+                }
+              })
+              .catch(err => {
+                if (this._onFailure) this._onFailure(err.toString());
+              });
+            },
+            getData: function() { this._callApi('getData', Array.from(arguments)); },
+            addData: function() { this._callApi('addData', Array.from(arguments)); },
+            updateData: function() { this._callApi('updateData', Array.from(arguments)); },
+            deleteData: function() { this._callApi('deleteData', Array.from(arguments)); },
+            deleteMultipleData: function() { this._callApi('deleteMultipleData', Array.from(arguments)); },
+            reorderData: function() { this._callApi('reorderData', Array.from(arguments)); }
+          }
+        }
+      };
+    }
+    // ------------------------------------
+
     let allData = [];
     let currentFilteredData = [];
     let currentPage = 1;
@@ -1032,10 +1077,6 @@
         });
       }
 
-      if (typeof google === 'undefined') {
-        onFailure({ message: 'សូមបើកដំណើរការកម្មវិធីនេះនៅលើ Google Apps Script Web App។' });
-        return;
-      }
       fetchData();
     }
 
