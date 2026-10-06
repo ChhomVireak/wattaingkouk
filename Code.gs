@@ -32,6 +32,7 @@ function doPost(e) {
     else if (method === 'deleteData') result = deleteData(args[0]);
     else if (method === 'deleteMultipleData') result = deleteMultipleData(args[0]);
     else if (method === 'reorderData') result = reorderData(args[0], args[1], args[2]);
+    else if (method === 'updateHeader') result = updateHeader(args[0], args[1]);
     else throw new Error('Method not found: ' + method);
 
     return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: result }))
@@ -321,6 +322,21 @@ function reorderData(draggedId, targetId, position) {
     }
     
     return getData();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+function updateHeader(rowIndex, value) {
+  try {
+    const ss = SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) throw new Error("មិនអាចស្វែងរកផ្ទាំងឈ្មោះ '" + SHEET_NAME + "' បានទេ។");
+
+    // row index is 1-based in Google Sheets API.
+    sheet.getRange(rowIndex, 1).setValue(value);
+    
+    return true;
   } catch (error) {
     throw new Error(error.message);
   }

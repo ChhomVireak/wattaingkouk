@@ -762,9 +762,9 @@
 <body onload="init()">
 
   <header>
-    <h1 id="app-title1">បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
-    <span id="event-date" style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px;"></span>
-    <div class="subtitle" id="app-title2">សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
+    <h1 id="app-title1" contenteditable="true" title="ចុចទីនេះដើម្បីកែប្រែចំណងជើង">បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
+    <span id="event-date" contenteditable="true" style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px; cursor: text; outline: none;" title="ចុចទីនេះដើម្បីកែប្រែកាលបរិច្ឆេទ"></span>
+    <div class="subtitle" id="app-title2" contenteditable="true" title="ចុចទីនេះដើម្បីកែប្រែឈ្មោះវត្ត">សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
   </header>
 
   <div class="container">
@@ -1030,7 +1030,8 @@
             updateData: function () { this._callApi('updateData', Array.from(arguments)); },
             deleteData: function () { this._callApi('deleteData', Array.from(arguments)); },
             deleteMultipleData: function () { this._callApi('deleteMultipleData', Array.from(arguments)); },
-            reorderData: function () { this._callApi('reorderData', Array.from(arguments)); }
+            reorderData: function () { this._callApi('reorderData', Array.from(arguments)); },
+            updateHeader: function () { this._callApi('updateHeader', Array.from(arguments)); }
           }
         }
       };
@@ -1066,6 +1067,17 @@
     }
 
     function init() {
+      // Auto-save edited headers back to Google Sheets
+      document.getElementById('app-title1').addEventListener('blur', function () {
+        if (this.innerText.trim() !== '') google.script.run.updateHeader(1, this.innerText);
+      });
+      document.getElementById('app-title2').addEventListener('blur', function () {
+        if (this.innerText.trim() !== '') google.script.run.updateHeader(2, this.innerText);
+      });
+      document.getElementById('event-date').addEventListener('blur', function () {
+        if (this.innerText.trim() !== '') google.script.run.updateHeader(3, this.innerText);
+      });
+
       fetchData();
     }
 
