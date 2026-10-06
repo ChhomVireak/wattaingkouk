@@ -762,9 +762,13 @@
 <body onload="init()">
 
   <header>
-    <h1 id="app-title1" contenteditable="true" title="ចុចទីនេះដើម្បីកែប្រែចំណងជើង">បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
-    <span id="event-date" contenteditable="true" style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px; cursor: text; outline: none;" title="ចុចទីនេះដើម្បីកែប្រែកាលបរិច្ឆេទ"></span>
-    <div class="subtitle" id="app-title2" contenteditable="true" title="ចុចទីនេះដើម្បីកែប្រែឈ្មោះវត្ត">សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
+    <h1 id="app-title1" contenteditable="false" title="ចុចទីនេះដើម្បីកែប្រែចំណងជើង">បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
+    <h2 style="font-family:'Moul'; font-size:18px;">វត្តសម្ដេចជោតញ្ញាណ តាំងគោក ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</h2>
+    <span id="event-date" contenteditable="true"
+      style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px; cursor: text; outline: none;"
+      title="ចុចទីនេះដើម្បីកែប្រែកាលបរិច្ឆេទ"></span>
+    <div class="subtitle" id="app-title2" contenteditable="false" title="ចុចទីនេះដើម្បីកែប្រែឈ្មោះវត្ត">
+      សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
   </header>
 
   <div class="container">
@@ -841,11 +845,11 @@
         <h2 style="margin: 0; color: var(--primary);">បញ្ជីរាយនាម</h2>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button class="btn btn-secondary" onclick="showA4Preview()"
-            style="background-color: #fff; border: 1px solid var(--border);">🖼️ ទម្រង់ A4/រូបភាព</button>
+            style="background-color: #fff; border: 1px solid var(--border);">ទាញយករូបភាព</button>
           <button class="btn btn-secondary" onclick="printList()"
-            style="background-color: #fff; border: 1px solid var(--border);">🖨️ បោះពុម្ពបញ្ជី</button>
+            style="background-color: #fff; border: 1px solid var(--border);">បោះពុម្ពបញ្ជី</button>
           <button class="btn btn-secondary" onclick="printSummary()"
-            style="background-color: #fff; border: 1px solid var(--border);">🖨️ បោះពុម្ពសរុប</button>
+            style="background-color: #fff; border: 1px solid var(--border);">បោះពុម្ពសរុប</button>
           <button class="btn btn-danger" id="btn-delete-selected" onclick="deleteSelected()"
             style="display: none;">លុបអ្នកដែលបានជ្រើសរើស</button>
           <button class="btn btn-success" onclick="openAddModal()">+ បញ្ចូលទិន្នន័យថ្មី</button>
@@ -1107,7 +1111,7 @@
     function onSuccess(response) {
       allData = response.rows;
       document.getElementById('updated-time').textContent = 'ធ្វើបច្ចុប្បន្នភាពចុងក្រោយ៖ ' + escapeHtml(response.updated);
-      
+
       // Update headers from Sheet data
       if (response.title1) document.getElementById('app-title1').innerText = response.title1;
       if (response.title2) document.getElementById('app-title2').innerText = response.title2;
@@ -1436,6 +1440,7 @@
           <div class="a4-page" style="background: #fff; width: 297mm; height: 210mm; margin: 0 auto 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.2); font-family: 'Battambang', sans-serif; position: relative; overflow: hidden; box-sizing: border-box;">
             <div style="background-color: #6a1515; color: white; text-align: center; padding: 20px; border-bottom: 5px solid var(--secondary);">
                <h1 style="font-family: 'Moul', serif; margin: 0; font-size: 26px; color: white; text-shadow: none;">${document.getElementById('app-title1').innerText}</h1>
+               <h2 style="font-family:'Moul'; font-size:18px;">វត្តសម្ដេចជោតញ្ញាណ តាំងគោក ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</h2>
                <p style="margin: 10px 0 5px 0; font-size: 16px; font-weight: bold;">${document.getElementById('app-title2').innerText}</p>
                  <span style="font-size: 14px;">${document.getElementById('event-date').innerText}</span>
             </div>
