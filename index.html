@@ -762,12 +762,9 @@
 <body onload="init()">
 
   <header>
-    <h1>បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
-    <span id="event-date" contenteditable="true"
-      style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px; cursor: text; outline: none;"
-      title="ចុចទីនេះដើម្បីកែប្រែកាលបរិច្ឆេទ">ថ្ងៃសៅរ៍ អាទិត្យ ៤ ៥កើត ខែកត្តិក ឆ្នាំរោង ឆស័ក ព.ស.២៥៦៨ ត្រូវនឹងថ្ងៃទី១៤
-      ១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៤</span>
-    <div class="subtitle">សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
+    <h1 id="app-title1">បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
+    <span id="event-date" style="font-size: 14px; border-bottom: 1px dashed rgba(255,255,255,0.5); padding-bottom: 2px;"></span>
+    <div class="subtitle" id="app-title2">សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
   </header>
 
   <div class="container">
@@ -1069,18 +1066,6 @@
     }
 
     function init() {
-      const savedDate = localStorage.getItem('kathina_event_date');
-      const dateEl = document.getElementById('event-date');
-      if (savedDate && dateEl) {
-        dateEl.innerText = savedDate;
-      }
-
-      if (dateEl) {
-        dateEl.addEventListener('input', function () {
-          localStorage.setItem('kathina_event_date', this.innerText);
-        });
-      }
-
       fetchData();
     }
 
@@ -1110,6 +1095,11 @@
     function onSuccess(response) {
       allData = response.rows;
       document.getElementById('updated-time').textContent = 'ធ្វើបច្ចុប្បន្នភាពចុងក្រោយ៖ ' + escapeHtml(response.updated);
+      
+      // Update headers from Sheet data
+      if (response.title1) document.getElementById('app-title1').innerText = response.title1;
+      if (response.title2) document.getElementById('app-title2').innerText = response.title2;
+      if (response.eventDate) document.getElementById('event-date').innerText = response.eventDate;
 
       populateDropdowns();
       applyFilters(); // will renderTable() internally
@@ -1433,8 +1423,8 @@
         html += `
           <div class="a4-page" style="background: #fff; width: 297mm; height: 210mm; margin: 0 auto 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.2); font-family: 'Battambang', sans-serif; position: relative; overflow: hidden; box-sizing: border-box;">
             <div style="background-color: #6a1515; color: white; text-align: center; padding: 20px; border-bottom: 5px solid var(--secondary);">
-               <h1 style="font-family: 'Moul', serif; margin: 0; font-size: 26px; color: white; text-shadow: none;">បញ្ជីរាយនាមម្ចាស់អង្គកឋិនទាន</h1>
-               <p style="margin: 10px 0 5px 0; font-size: 16px; font-weight: bold;">វត្តសម្តេចជោតញ្ញាណ តាំងគោក ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</p>
+               <h1 style="font-family: 'Moul', serif; margin: 0; font-size: 26px; color: white; text-shadow: none;">${document.getElementById('app-title1').innerText}</h1>
+               <p style="margin: 10px 0 5px 0; font-size: 16px; font-weight: bold;">${document.getElementById('app-title2').innerText}</p>
                  <span style="font-size: 14px;">${document.getElementById('event-date').innerText}</span>
             </div>
             <table style="width: 100%; border-collapse: collapse; text-align: center; color: #333;">

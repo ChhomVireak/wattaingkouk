@@ -80,7 +80,11 @@ function getData() {
     const timeZone = ss.getSpreadsheetTimeZone();
     const updated = Utilities.formatDate(new Date(), timeZone, "dd/MM/yyyy HH:mm:ss");
     
-    return { rows: rows, updated: updated };
+    const title1 = data.length > 0 ? String(data[0][0] || "").trim() : "";
+    const title2 = data.length > 1 ? String(data[1][0] || "").trim() : "";
+    const eventDate = data.length > 2 ? String(data[2][0] || "").trim() : "";
+    
+    return { rows: rows, updated: updated, title1: title1, title2: title2, eventDate: eventDate };
   } catch (error) {
     throw new Error(error.message);
   }
