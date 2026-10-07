@@ -636,6 +636,11 @@
     }
 
     @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0mm;
+      }
+
       body {
         background: #fff;
         color: #000;
@@ -846,6 +851,8 @@
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button class="btn btn-secondary" onclick="showA4Preview()"
             style="background-color: #fff; border: 1px solid var(--border);">ទាញយករូបភាព</button>
+          <button class="btn btn-primary" onclick="printCertificates()"
+            style="background-color: var(--info); border: 1px solid var(--border);">បោះពុម្ពប័ណ្ណសរសើរ</button>
           <button class="btn btn-secondary" onclick="printList()"
             style="background-color: #fff; border: 1px solid var(--border);">បោះពុម្ពបញ្ជី</button>
           <button class="btn btn-secondary" onclick="printSummary()"
@@ -1298,7 +1305,8 @@
             <td data-label="សម្គាល់">${escapeHtml(row.notes)}</td>
             <td data-label="សកម្មភាព">
               <div class="action-buttons">
-                <button class="btn btn-info" onclick="openEditModal('${row.id}')">កែប្រែ</button>
+                <button class="btn btn-info" onclick="openEditModal('${row.id}')">កែ</button>
+                <button class="btn btn-secondary" onclick="printCertificates(['${escapeHtml(row.id)}'])" style="background-color: #f1c40f; color: black; border-color: #f1c40f;">ប័ណ្ណសរសើរ</button>
                 <button class="btn btn-danger" onclick="deleteRecord('${row.id}')">លុប</button>
               </div>
             </td>
@@ -1580,6 +1588,115 @@
         window.print();
         document.body.classList.remove('print-mode', 'print-a4');
       }, 300);
+    }
+
+    function printCertificates(ids = null) {
+      let selectedIds = ids;
+      if (!selectedIds) {
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+        selectedIds = Array.from(checkboxes).map(cb => cb.value);
+      }
+
+      if (selectedIds.length === 0) {
+        alert('សូមជ្រើសរើសយ៉ាងហោចណាស់១នាក់ ដើម្បីបោះពុម្ពប័ណ្ណសរសើរ!');
+        return;
+      }
+
+      const wrapper = document.getElementById('a4-export-pages');
+      let html = '';
+
+      selectedIds.forEach(id => {
+        const row = allData.find(r => String(r.id) === String(id));
+        if (row) {
+          let amounts = [];
+          if (row.construction > 0) amounts.push(`បច្ច័យកសាង ${formatNumber(row.construction)} ${row.con_curr}`);
+          if (row.requisites > 0) amounts.push(`បច្ច័យបួន ${formatNumber(row.requisites)} ${row.req_curr}`);
+          if (row.meal > 0) amounts.push(`បច្ច័យម្ហូប ${formatNumber(row.meal)} ${row.meal_curr}`);
+          const amountText = amounts.length > 0 ? amounts.join(' និង ') : '';
+
+          html += `
+            <div class="a4-page certificate-container" style="width: 297mm; height: 210mm; background: #fff; position: relative; overflow: hidden; font-family: 'Battambang', sans-serif; box-sizing: border-box; page-break-after: always; padding: 0; margin: 0 auto 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+              
+              <!-- Background Image using IMG tag for reliable printing -->
+              <img src="./Frame.png" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95%; height: 95%; object-fit: fill; z-index: 1;">
+              <img src="./backLogo.png" alt="" style="position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); width: 400px; object-fit: fill; z-index: 1; opacity: 0.2;">
+              <!-- Inner Content Wrapper -->
+              <div style="position: absolute; top: 50mm; bottom: 45mm; left: 38mm; right: 38mm; display: flex; flex-direction: column; z-index: 2;">
+                 
+                 <!-- Header Row (Top Left & Top Right) -->
+                 <div style="display: flex; justify-content: space-between; font-size: 13.33px; color: #000;">
+                    <div style="text-align: center; width: 270px; line-height: 1.5; font-family: 'Moul';">
+                       វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)<br>
+                       ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ
+                    </div>
+                    <div style="text-align: center; width: 220px; line-height: 1.5; font-family: 'Moul';">
+                       ព្រះរាជាណាចក្រកម្ពុជា<br>
+                       ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
+                       <span style="font-family: tacteing; font-size: 48px; line-height: 0; display: inline-block; transform: translateY(8px);">6</span>
+                    </div>
+                 </div>
+                 
+                 <!-- Main Title & Subtitle -->
+                 <div style="text-align: center; margin-top: -15px;">
+                    <h1 style="color: #d32f2f; font-family: 'Moul', serif; font-size: 25px; margin: 0px; letter-spacing: 2px;">ប័ណ្ណថ្លែងអំណរគុណ</h1>
+                    <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">ព្រះគ្រូចៅអធិការ ថេរានុត្ថេរៈ គណៈកម្មការ វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</p>
+                    <p style="font-size: 16px; margin: 0px;">ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</p>
+                    <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">សូមថ្លែងអំណរគុណចំពោះ</p>
+                 </div>
+                 
+                 <!-- Recipient Name -->
+                 <div style="text-align: center; margin-bottom: 5px; display: block; width: 100%;">
+                    <h2 style="color: #d32f2f; font-family: 'Moul', serif; font-size: 16px; margin: 0; padding: 0; display: block; border-bottom: 2px dotted #666; line-height: 1.5;">
+                       ${escapeHtml(row.name)}
+                    </h2>
+                 </div>
+                 
+                 <!-- Body Text -->
+                 <div style="flex-grow: 1; padding: 0px; display: block; width: 100%;">
+                    <div style="display: flex; align-items: baseline; font-size: 16px; margin-bottom: 5px; width: 100%;">
+                       <span style="white-space: nowrap;">ដែលមានសទ្ធាជ្រះថ្លាបានបរិច្ចាគទានជា&nbsp;</span>
+                       <span style="flex-grow: 1; border-bottom: 2px dotted #666; color: #000; font-family: 'Moul'; font-size: 15px; text-align: center; line-height: 1.5;">${amountText}</span>
+                    </div>
+                    <p style="font-size: 16px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
+                       ដើម្បីរួមចំណែកកសាង <span style="font-family: 'Moul'; font-size: 15px;">វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</span> ក្នុងព្រះពុទ្ធសាសនា និងសង្គមជាតិផងដែរ។
+                    </p>
+                    <p style="font-size: 16px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
+                       អាស្រ័យហេតុនេះ យើងខ្ញុំ សូមប្រសិទ្ធពរ បវរសួស្តី ជ័យមង្គល មហាប្រសើរ ជូនដល់អស់លោក លោកស្រី និងពុទ្ធបរិស័ទទាំងអស់
+                       សូមបានប្រកបនូវពុទ្ធពរទាំងឡាយ ៤ប្រការគឺ <span style="font-family: 'Moul'; font-size: 15px;">អាយុ វណ្ណៈ សុខៈ និង ពលៈ</span> កុំបីឃ្លៀងឃ្លាតឡើយ។
+                    </p>
+                 </div>
+                 
+                 <!-- Footer Signatures -->
+                 <div style="display: flex; justify-content: space-between; margin-top: 0px; padding: 0px; font-size: 14px;">
+                    <div style="text-align: center; width: 200px; margin-top: 20px; position: relative;">
+                       <p style=" margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">គណៈកម្មការ</p>
+                       <img src="./Sign1.png" alt="" style="width: 100px; height: 100px; position: absolute; left: 50%; transform: translateX(-50%); top: 10px; z-index: 1;">
+                    </div>
+                    <div style="text-align: center; width: 200px; margin-top: 20px; position: relative;">
+                       <p style=" margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">អាចារ្យ</p>
+                       <img src="./Sign2.png" alt="" style="width: 100px; height: 100px; position: absolute; left: 50%; transform: translateX(-50%); top: 10px; z-index: 1;">
+                    </div>
+                    <div style="text-align: center; width: 300px; position: relative; margin-top: 0px;">
+                       <p style="margin: 0px;">ថ្ងៃអាទិត្យ ៦កើត ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស.២៥៧០</p>
+                       <p style="margin: 0px;">ធ្វើនៅវត្តតាំងគោក ថ្ងៃទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦</p>
+                       <p style=" margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">ព្រះចៅអធិការ</p>
+                       <img src="./Sign0.png" alt="" style="width: 5cm; position: absolute; left: 50%; transform: translateX(-50%); top: -35px; z-index: 1; mix-blend-mode: multiply;">
+                    </div>
+                 </div>
+                 
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      wrapper.innerHTML = html;
+
+      const downloadBtn = document.getElementById('btn-download-jpg');
+      if (downloadBtn) downloadBtn.style.display = 'none';
+
+      document.querySelector('.container').style.display = 'none';
+      document.getElementById('a4-export-wrapper').style.display = 'block';
     }
 
     function getFormData() {
