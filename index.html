@@ -795,6 +795,12 @@
 
     <div id="content" style="display: none;">
 
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <button id="toggle-amounts-btn" onclick="toggleAmounts()"
+          style="background: var(--card-bg); border: 1px solid var(--border); padding: 5px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--primary); display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          <span id="eye-icon">👁️</span> <span>បង្ហាញ</span>
+        </button>
+      </div>
       <div class="summary-grid">
         <div class="summary-card">
           <div class="summary-title">ម្ចាស់កឋិនទានសរុប</div>
@@ -812,7 +818,7 @@
           </div>
         </div>
 
-        <div class="summary-card">
+        <div class="summary-card" id="card-con" style="display: none;">
           <div class="summary-title">បច្ច័យកសាង</div>
           <div class="currency-split">
             <div class="currency-col">
@@ -826,7 +832,7 @@
           </div>
         </div>
 
-        <div class="summary-card">
+        <div class="summary-card" id="card-req" style="display: none;">
           <div class="summary-title">បច្ច័យបួន</div>
           <div class="currency-split">
             <div class="currency-col">
@@ -840,7 +846,7 @@
           </div>
         </div>
 
-        <div class="summary-card">
+        <div class="summary-card" id="card-meal" style="display: none;">
           <div class="summary-title">បច្ច័យម្ហូប</div>
           <div class="currency-split">
             <div class="currency-col">
@@ -1061,6 +1067,32 @@
     let allData = [];
     let currentFilteredData = [];
     let currentPage = 1;
+    let amountsVisible = false;
+
+    function toggleAmounts() {
+      amountsVisible = !amountsVisible;
+      const displayStyle = amountsVisible ? 'block' : 'none';
+
+      const cardCon = document.getElementById('card-con');
+      if (cardCon) cardCon.style.display = displayStyle;
+
+      const cardReq = document.getElementById('card-req');
+      if (cardReq) cardReq.style.display = displayStyle;
+
+      const cardMeal = document.getElementById('card-meal');
+      if (cardMeal) cardMeal.style.display = displayStyle;
+
+      const icon = document.getElementById('eye-icon');
+      if (icon) {
+        icon.textContent = amountsVisible ? '🫣' : '👁️';
+      }
+      const btnText = document.getElementById('toggle-amounts-btn').querySelector('span:nth-child(2)');
+      if (btnText) {
+        btnText.textContent = amountsVisible ? 'លាក់' : 'បង្ហាញ';
+      }
+
+      renderTable();
+    }
     const rowsPerPage = 10;
 
     function escapeHtml(unsafe) {
@@ -1302,9 +1334,9 @@
               <th>ល.រ</th>
               <th>ឈ្មោះ</th>
               <th>ភូមិ</th>
-              <th>បច្ច័យកសាង</th>
-              <th>បច្ច័យបួន</th>
-              <th>បច្ច័យម្ហូប</th>
+              ${amountsVisible ? '<th>បច្ច័យកសាង</th>' : ''}
+              ${amountsVisible ? '<th>បច្ច័យបួន</th>' : ''}
+              ${amountsVisible ? '<th>បច្ច័យម្ហូប</th>' : ''}
               <th>ប្រភេទ</th>
               <th>សម្គាល់</th>
               <th>សកម្មភាព</th>
@@ -1314,11 +1346,17 @@
       `;
 
       const isDraggable = (document.getElementById('search').value === '' && document.getElementById('filter-village').value === '' && document.getElementById('filter-type').value === '');
+      let printedCertificates = JSON.parse(localStorage.getItem('printedCertificates') || '[]');
 
       pageData.forEach((row, index) => {
         const dragAttrs = isDraggable ? `draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"` : '';
         const dragHandle = isDraggable ? `<span class="drag-handle" title="ទាញដើម្បីប្ដូរទីតាំង">☰</span>` : '';
         const serialNumber = startIndex + index + 1;
+
+        const isPrinted = printedCertificates.includes(String(row.id));
+        const printBtnColor = isPrinted ? '#2ecc71' : '#f1c40f';
+        const printBtnText = isPrinted ? '✓ ប័ណ្ណ' : 'ប័ណ្ណ';
+        const printBtnTextColor = isPrinted ? 'white' : 'black';
 
         html += `
           <tr ${dragAttrs} data-id="${row.id}" class="${isDraggable ? 'draggable' : ''}">
@@ -1328,15 +1366,15 @@
             <td data-label="ល.រ">${dragHandle}${serialNumber}</td>
             <td data-label="ឈ្មោះ" class="donor-name">${escapeHtml(row.name)}</td>
             <td data-label="ភូមិ">${escapeHtml(row.village)}</td>
-            <td data-label="បច្ច័យកសាង">${formatCurrencyValue(row.construction, row.con_curr)}</td>
-            <td data-label="បច្ច័យបួន">${formatCurrencyValue(row.requisites, row.req_curr)}</td>
-            <td data-label="បច្ច័យម្ហូប">${formatCurrencyValue(row.meal, row.meal_curr)}</td>
+            ${amountsVisible ? `<td data-label="បច្ច័យកសាង">${formatCurrencyValue(row.construction, row.con_curr)}</td>` : ''}
+            ${amountsVisible ? `<td data-label="បច្ច័យបួន">${formatCurrencyValue(row.requisites, row.req_curr)}</td>` : ''}
+            ${amountsVisible ? `<td data-label="បច្ច័យម្ហូប">${formatCurrencyValue(row.meal, row.meal_curr)}</td>` : ''}
             <td data-label="ប្រភេទ">${escapeHtml(row.type)}</td>
             <td data-label="សម្គាល់">${escapeHtml(row.notes)}</td>
             <td data-label="សកម្មភាព">
               <div class="action-buttons">
                 <button class="btn btn-info" onclick="openEditModal('${row.id}')">កែ</button>
-                <button class="btn btn-secondary" onclick="printCertificates(['${escapeHtml(row.id)}'])" style="background-color: #f1c40f; color: black; border-color: #f1c40f;">ប័ណ្ណ</button>
+                <button class="btn btn-secondary" onclick="printCertificates(['${escapeHtml(row.id)}'])" style="background-color: ${printBtnColor}; color: ${printBtnTextColor}; border-color: ${printBtnColor};">${printBtnText}</button>
                 <button class="btn btn-danger" onclick="deleteRecord('${row.id}')">លុប</button>
               </div>
             </td>
@@ -1394,9 +1432,9 @@
               <th>ល.រ</th>
               <th>ឈ្មោះ</th>
               <th>ភូមិ</th>
-              <th>បច្ច័យកសាង</th>
-              <th>បច្ច័យបួន</th>
-              <th>បច្ច័យម្ហូប</th>
+              ${amountsVisible ? '<th>បច្ច័យកសាង</th>' : ''}
+              ${amountsVisible ? '<th>បច្ច័យបួន</th>' : ''}
+              ${amountsVisible ? '<th>បច្ច័យម្ហូប</th>' : ''}
               <th>ប្រភេទ</th>
               <th>សម្គាល់</th>
             </tr>
@@ -1404,15 +1442,15 @@
           <tbody>
       `;
 
-      dataToPrint.forEach(row => {
+      dataToPrint.forEach((row, index) => {
         html += `
           <tr>
-            <td>${escapeHtml(row.id)}</td>
+            <td>${index + 1}</td>
             <td style="font-weight: bold;">${escapeHtml(row.name)}</td>
             <td>${escapeHtml(row.village)}</td>
-            <td>${formatCurrencyValue(row.construction, row.con_curr)}</td>
-            <td>${formatCurrencyValue(row.requisites, row.req_curr)}</td>
-            <td>${formatCurrencyValue(row.meal, row.meal_curr)}</td>
+            ${amountsVisible ? `<td>${formatCurrencyValue(row.construction, row.con_curr)}</td>` : ''}
+            ${amountsVisible ? `<td>${formatCurrencyValue(row.requisites, row.req_curr)}</td>` : ''}
+            ${amountsVisible ? `<td>${formatCurrencyValue(row.meal, row.meal_curr)}</td>` : ''}
             <td>${escapeHtml(row.type)}</td>
             <td>${escapeHtml(row.notes)}</td>
           </tr>
@@ -1512,6 +1550,7 @@
     function closeA4Preview() {
       document.getElementById('a4-export-wrapper').style.display = 'none';
       document.querySelector('.container').style.display = 'block';
+      renderTable();
     }
 
     async function downloadJPG() {
@@ -1631,6 +1670,14 @@
         alert('សូមជ្រើសរើសយ៉ាងហោចណាស់១នាក់ ដើម្បីបោះពុម្ពប័ណ្ណសរសើរ!');
         return;
       }
+
+      let printedCertificates = JSON.parse(localStorage.getItem('printedCertificates') || '[]');
+      selectedIds.forEach(id => {
+        if (!printedCertificates.includes(String(id))) {
+          printedCertificates.push(String(id));
+        }
+      });
+      localStorage.setItem('printedCertificates', JSON.stringify(printedCertificates));
 
       const wrapper = document.getElementById('a4-export-pages');
       let html = '';
