@@ -783,17 +783,19 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       z-index: 10000;
       opacity: 0;
       transition: opacity 0.3s ease, transform 0.3s ease;
       pointer-events: none;
       font-family: 'Battambang', sans-serif;
     }
+
     .custom-toast.show {
       opacity: 1;
       transform: translate(-50%, 0);
     }
+
     .toast-icon {
       background: white;
       color: #16a34a;
@@ -804,10 +806,12 @@
       align-items: center;
       justify-content: center;
     }
+
     .toast-icon svg {
       width: 14px;
       height: 14px;
     }
+
     .toast-message {
       font-size: 16px;
       font-weight: 500;
@@ -819,7 +823,10 @@
 
   <div id="custom-toast" class="custom-toast">
     <div class="toast-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+        stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
     </div>
     <div id="toast-message" class="toast-message">ជោគជ័យ!</div>
   </div>
@@ -862,6 +869,10 @@
             <div class="currency-col">
               <div class="currency-label">លៀង</div>
               <div class="currency-val" id="count-leang">0</div>
+            </div>
+            <div class="currency-col">
+              <div class="currency-label">ស្បង់</div>
+              <div class="currency-val" id="count-slab">0</div>
             </div>
           </div>
         </div>
@@ -916,6 +927,8 @@
             style="background-color: #fff; border: 1px solid var(--border);">ទាញយករូបភាព</button>
           <button class="btn btn-primary" onclick="printCertificates()"
             style="background-color: var(--info); border: 1px solid var(--border);">បោះពុម្ពប័ណ្ណសរសើរ</button>
+          <!-- <button class="btn btn-secondary" onclick="resetPrintStatus()"
+            style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;" title="លុបសញ្ញា ✓ ចេញពីប័ណ្ណទាំងអស់">សម្អាតសញ្ញា ✓</button> -->
           <button class="btn btn-secondary" onclick="printList()"
             style="background-color: #fff; border: 1px solid var(--border);">បោះពុម្ពបញ្ជី</button>
           <button class="btn btn-secondary" onclick="printSummary()"
@@ -1309,7 +1322,7 @@
       let conRiel = 0, conUSD = 0;
       let reqRiel = 0, reqUSD = 0;
       let mealRiel = 0, mealUSD = 0;
-      let countTrai = 0, countLeang = 0;
+      let countTrai = 0, countLeang = 0, countSlab = 0;
 
       data.forEach(row => {
         if (isUSD(row.con_curr)) conUSD += (parseFloat(row.construction) || 0);
@@ -1324,6 +1337,7 @@
         const typeStr = String(row.type).trim();
         if (typeStr.includes('ត្រៃ')) countTrai++;
         if (typeStr.includes('លៀង')) countLeang++;
+        if (typeStr.includes('ស្បង់')) countSlab++;
       });
 
       document.getElementById('con-riel').textContent = formatNumber(conRiel) + ' ៛';
@@ -1337,6 +1351,7 @@
 
       document.getElementById('count-trai').textContent = formatNumber(countTrai);
       document.getElementById('count-leang').textContent = formatNumber(countLeang);
+      document.getElementById('count-slab').textContent = formatNumber(countSlab);
     }
 
     function toggleSelectAll(source) {
@@ -1736,6 +1751,8 @@
         }
       });
       localStorage.setItem('printedCertificates', JSON.stringify(printedCertificates));
+      renderTable(); // Re-render to show the checkmarks immediately
+
 
       const wrapper = document.getElementById('a4-export-pages');
       let html = '';
@@ -1901,14 +1918,14 @@
 
       if (id) {
         google.script.run
-          .withSuccessHandler(function(res) {
+          .withSuccessHandler(function (res) {
             showToast("បានកែប្រែទិន្នន័យដោយជោគជ័យ!");
             onSuccess(res);
           })
           .withFailureHandler(onFailure).updateData(id, record);
       } else {
         google.script.run
-          .withSuccessHandler(function(res) {
+          .withSuccessHandler(function (res) {
             showToast("បានបញ្ចូលទិន្នន័យថ្មីដោយជោគជ័យ!");
             onSuccess(res);
           })
@@ -1937,14 +1954,14 @@
 
       if (Array.isArray(target)) {
         google.script.run
-          .withSuccessHandler(function(res) {
+          .withSuccessHandler(function (res) {
             showToast("បានលុបទិន្នន័យដោយជោគជ័យ!");
             onSuccess(res);
           })
           .withFailureHandler(onFailure).deleteMultipleData(target);
       } else {
         google.script.run
-          .withSuccessHandler(function(res) {
+          .withSuccessHandler(function (res) {
             showToast("បានលុបទិន្នន័យដោយជោគជ័យ!");
             onSuccess(res);
           })
@@ -2026,6 +2043,14 @@
         row.classList.remove('drag-over-top', 'drag-over-bottom');
       });
       draggedRowId = null;
+    }
+
+    function resetPrintStatus() {
+      if (confirm("តើអ្នកពិតជាចង់សម្អាតសញ្ញា ✓ ចេញពីប័ណ្ណដែលបាន Print រួចទាំងអស់មែនទេ?")) {
+        localStorage.removeItem('printedCertificates');
+        renderTable();
+        showToast("បានសម្អាតសញ្ញា ✓ រួចរាល់!");
+      }
     }
 
     // Pull to refresh logic for iPhone PWA
