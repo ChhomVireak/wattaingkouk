@@ -1121,8 +1121,8 @@
             <button class="pill-btn" onclick="selectElementToEdit('sign0')" id="pill-sign0">✍️ ព្រះចៅអធិការ</button>
             <button class="pill-btn" onclick="selectElementToEdit('sign1')" id="pill-sign1">✍️ អាចារ្យ</button>
             <button class="pill-btn" onclick="selectElementToEdit('sign2')" id="pill-sign2">✍️ គណៈកម្មការ</button>
-            <button class="pill-btn" onclick="selectElementToEdit('typography')" id="pill-typography">🎨
-              ពណ៌អក្សរ</button>
+            <button class="pill-btn" onclick="selectElementToEdit('text_editor')" id="pill-text_editor">📝 កែអក្សរ & រំកិល</button>
+            <button class="pill-btn" onclick="selectElementToEdit('typography')" id="pill-typography">🎨 ពណ៌អក្សរ</button>
           </div>
 
           <!-- Dynamic Controls Panel injected by JS -->
@@ -2021,6 +2021,28 @@
           const nameColor = getSetting('name_color') || '#d32f2f';
           const textColor = getSetting('text_color') || '#000000';
 
+          const certTitle = getSetting('cert_title');
+          const templeHeader = getSetting('cert_temple_header');
+          const addressHeader = getSetting('cert_address_header');
+          const subtitle1 = getSetting('cert_subtitle1');
+          const subtitle2 = getSetting('cert_subtitle2');
+          const thanksLabel = getSetting('cert_thanks_label');
+          const purposeText = getSetting('cert_purpose_text');
+          const blessingText = getSetting('cert_blessing_text');
+          const dateLunar = getSetting('cert_date_lunar');
+          const dateSolar = getSetting('cert_date_solar');
+          const sign2Title = getSetting('sign2_title');
+          const sign1Title = getSetting('sign1_title');
+          const sign0Title = getSetting('sign0_title');
+
+          const titleFontSize = getSetting('title_font_size') || 25;
+          const titleOffsetY = getSetting('title_offset_y') !== undefined ? getSetting('title_offset_y') : -15;
+          const bodyFontSize = getSetting('body_font_size') || 18;
+          const bodyOffsetY = getSetting('body_offset_y') !== undefined ? getSetting('body_offset_y') : 0;
+          const dateOffsetY = getSetting('date_offset_y') !== undefined ? getSetting('date_offset_y') : -10;
+          const dateOffsetX = getSetting('date_offset_x') !== undefined ? getSetting('date_offset_x') : 0;
+          const signRowOffsetY = getSetting('sign_row_offset_y') !== undefined ? getSetting('sign_row_offset_y') : -64;
+
           html += `
             <div class="a4-page certificate-container" style="width: 297mm; height: 210mm; background: #fff; position: relative; overflow: hidden; font-family: 'Battambang', sans-serif; box-sizing: border-box; page-break-after: always; padding: 0; margin: 0 auto 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.2); color: ${textColor};">
               
@@ -2033,8 +2055,8 @@
                  <!-- Header Row (Top Left & Top Right) -->
                  <div style="display: flex; justify-content: space-between; font-size: 13.33px; color: ${textColor};">
                     <div style="text-align: center; width: 270px; line-height: 1.5; font-family: 'Moul';">
-                       វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)<br>
-                       ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ
+                       ${templeHeader}<br>
+                       ${addressHeader}
                     </div>
                     <div style="text-align: center; width: 220px; line-height: 1.5; font-family: 'Moul';">
                        ព្រះរាជាណាចក្រកម្ពុជា<br>
@@ -2044,11 +2066,11 @@
                  </div>
                  
                  <!-- Main Title & Subtitle -->
-                 <div style="text-align: center; margin-top: -15px;">
-                    <h1 style="color: ${titleColor}; font-family: 'Moul'; font-size: 25px; margin: 0px; letter-spacing: 2px; text-shadow: none;">ប័ណ្ណថ្លែងអំណរគុណ</h1>
-                    <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">ព្រះគ្រូចៅអធិការ ថេរានុត្ថេរៈ គណៈកម្មការ វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</p>
-                    <p style="font-size: 16px; margin: 0px;">ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</p>
-                    <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">សូមថ្លែងអំណរគុណចំពោះ</p>
+                 <div style="text-align: center; margin-top: ${titleOffsetY}px;">
+                    <h1 style="color: ${titleColor}; font-family: 'Moul'; font-size: ${titleFontSize}px; margin: 0px; letter-spacing: 2px; text-shadow: none;">${certTitle}</h1>
+                    <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">${subtitle1}</p>
+                    <p style="font-size: 16px; margin: 0px;">${subtitle2}</p>
+                    <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">${thanksLabel}</p>
                  </div>
                  
                  <!-- Recipient Name -->
@@ -2059,37 +2081,36 @@
                  </div>
                  
                  <!-- Body Text -->
-                 <div style="flex-grow: 1; padding: 0px; display: block; width: 100%;">
-                    <div style="display: flex; align-items: baseline; font-size: 18px; margin-bottom: 5px; width: 100%;">
+                 <div style="flex-grow: 1; padding: 0px; display: block; width: 100%; margin-top: ${bodyOffsetY}px; font-size: ${bodyFontSize}px;">
+                    <div style="display: flex; align-items: baseline; font-size: ${bodyFontSize}px; margin-bottom: 5px; width: 100%;">
                        <span style="white-space: nowrap;">ដែលមានសទ្ធាជ្រះថ្លាបានបរិច្ចាគទានជា&nbsp;</span>
                        <span style="flex-grow: 1; border-bottom: 2px dotted #666; color: ${textColor}; font-family: 'Moul'; font-size: 15px; text-align: center; line-height: 1.5;">${amountText}</span>
                     </div>
-                    <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
-                       ដើម្បីរួមចំណែកកសាង <span style="font-family: 'Moul'; font-size: 15px;">វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</span> ក្នុងព្រះពុទ្ធសាសនា និងសង្គមជាតិផងដែរ។
+                    <p style="font-size: ${bodyFontSize}px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
+                       ${purposeText}
                     </p>
-                    <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
-                       អាស្រ័យហេតុនេះ យើងខ្ញុំ សូមប្រសិទ្ធពរ បវរសួស្តី ជ័យមង្គល មហាប្រសើរ ជូនដល់អស់លោក លោកស្រី និងពុទ្ធបរិស័ទទាំងអស់
-                       សូមបានប្រកបនូវពុទ្ធពរទាំងឡាយ ៤ប្រការគឺ <span style="font-family: 'Moul'; font-size: 15px;">អាយុ វណ្ណៈ សុខៈ និង ពលៈ</span> កុំបីឃ្លៀងឃ្លាតឡើយ។
+                    <p style="font-size: ${bodyFontSize}px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
+                       ${blessingText}
                     </p>
-                     <div style="text-align: center; margin-top: -10px; font-size: 15px; display: grid; justify-items: right;">
+                     <div style="text-align: center; margin-top: ${dateOffsetY}px; transform: translateX(${dateOffsetX}px); font-size: 15px; display: grid; justify-items: right;">
                        <p style="margin: 0;">
-                         ថ្ងៃអាទិត្យ ៦កើត ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស.២៥៧០<br>
-                         ធ្វើនៅវត្តតាំងគោក ថ្ងៃទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦
+                         ${dateLunar}<br>
+                         ${dateSolar}
                        </p>
                      </div>
                   </div>
                   <!-- Footer Signatures -->
                   <div style="display: flex; justify-content: space-between; margin-top: 0px; padding: 0px; font-size: 14px;">
-                     <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
-                        <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">គណៈកម្មការ</p>
+                     <div style="text-align: center; width: 200px; margin-top: ${signRowOffsetY}px; position: relative;">
+                        <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">${sign2Title}</p>
                         ${sign2Src ? `<img src="${sign2Src}" crossorigin="anonymous" alt="" style="${sign2Style}">` : ''}
                      </div>
-                     <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
-                       <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">អាចារ្យ</p>
+                     <div style="text-align: center; width: 200px; margin-top: ${signRowOffsetY}px; position: relative;">
+                       <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">${sign1Title}</p>
                        ${sign1Src ? `<img src="${sign1Src}" crossorigin="anonymous" alt="" style="${sign1Style}">` : ''}
                      </div>
-                     <div style="text-align: center; width: 300px; position: relative; margin-top: -64px;">
-                       <p style="margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">ព្រះចៅអធិការ</p>
+                     <div style="text-align: center; width: 300px; position: relative; margin-top: ${signRowOffsetY}px;">
+                       <p style="margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">${sign0Title}</p>
                        ${sign0Src ? `<img src="${sign0Src}" crossorigin="anonymous" alt="" style="${sign0Style}">` : ''}
                      </div>
                   </div>
@@ -2394,7 +2415,31 @@
       // Typography Colors
       title_color: '#d32f2f',
       name_color: '#d32f2f',
-      text_color: '#000000'
+      text_color: '#000000',
+
+      // Certificate Text Content
+      cert_title: 'ប័ណ្ណថ្លែងអំណរគុណ',
+      cert_temple_header: 'វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)',
+      cert_address_header: 'ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ',
+      cert_subtitle1: 'ព្រះគ្រូចៅអធិការ ថេរានុត្ថេរៈ គណៈកម្មការ វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)',
+      cert_subtitle2: 'ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ',
+      cert_thanks_label: 'សូមថ្លែងអំណរគុណចំពោះ',
+      cert_purpose_text: 'ដើម្បីរួមចំណែកកសាង វត្តសម្តេចជោតញ្ញាណ (តាំងគោក) ក្នុងព្រះពុទ្ធសាសនា និងសង្គមជាតិផងដែរ។',
+      cert_blessing_text: 'អាស្រ័យហេតុនេះ យើងខ្ញុំ សូមប្រសិទ្ធពរ បវរសួស្តី ជ័យមង្គល មហាប្រសើរ ជូនដល់អស់លោក លោកស្រី និងពុទ្ធបរិស័ទទាំងអស់ សូមបានប្រកបនូវពុទ្ធពរទាំងឡាយ ៤ប្រការគឺ អាយុ វណ្ណៈ សុខៈ និង ពលៈ កុំបីឃ្លៀងឃ្លាតឡើយ។',
+      cert_date_lunar: 'ថ្ងៃអាទិត្យ ៦កើត ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស.២៥៧០',
+      cert_date_solar: 'ធ្វើនៅវត្តតាំងគោក ថ្ងៃទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+      sign2_title: 'គណៈកម្មការ',
+      sign1_title: 'អាចារ្យ',
+      sign0_title: 'ព្រះចៅអធិការ',
+
+      // Text Positions & Font Sizes (Move Text)
+      title_font_size: 25,
+      title_offset_y: -15,
+      body_font_size: 18,
+      body_offset_y: 0,
+      date_offset_y: -10,
+      date_offset_x: 0,
+      sign_row_offset_y: -64
     };
 
     function getSetting(key) {
@@ -2537,6 +2582,7 @@
         sign0: 'ហត្ថលេខាព្រះចៅអធិការ (Abbot)',
         sign1: 'ហត្ថលេខាអាចារ្យ (Achary)',
         sign2: 'ហត្ថលេខាគណៈកម្មការ (Committee)',
+        text_editor: 'កែអក្សរ & រំកិលទីតាំង (Text & Move)',
         typography: 'ពណ៌អក្សរ (Colors)'
       };
       const badge = document.getElementById('active-element-badge');
@@ -2548,6 +2594,190 @@
     function renderActiveElementControls() {
       const panel = document.getElementById('active-element-panel');
       if (!panel) return;
+
+      if (activeElementKey === 'text_editor') {
+        panel.innerHTML = `
+          <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px;">
+            <div style="font-weight: bold; margin-bottom: 6px; font-size: 14px; color: var(--primary);">📌 រំកិលទីតាំង & ទំហំអក្សរ (Move & Font Size)</div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 15px;">សារ៉េទីតាំងឡើងលើ/ចុះក្រោម និងបង្រួម/ពង្រីកទំហំអក្សរលើប័ណ្ណជាក់ស្ដែង។</div>
+
+            <!-- Title Position Y -->
+            <div class="control-row">
+              <div class="control-label">
+                <span>🧭 រំកិលចំណងជើង ឡើងលើ/ចុះក្រោម Y</span>
+                <span class="slider-val" id="val-title_offset_y">${getSetting('title_offset_y')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="-60" max="40" value="${getSetting('title_offset_y')}" 
+                  oninput="onSettingSliderChange('title_offset_y', this.value, 'px')">
+              </div>
+            </div>
+
+            <!-- Title Font Size -->
+            <div class="control-row">
+              <div class="control-label">
+                <span>🔠 ទំហំអក្សរចំណងជើង ("ប័ណ្ណថ្លែងអំណរគុណ")</span>
+                <span class="slider-val" id="val-title_font_size">${getSetting('title_font_size')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="16" max="36" value="${getSetting('title_font_size')}" 
+                  oninput="onSettingSliderChange('title_font_size', this.value, 'px')">
+              </div>
+            </div>
+
+            <!-- Body Position Y -->
+            <div class="control-row">
+              <div class="control-label">
+                <span>🧭 រំកិលតួសេចក្ដី ឡើងលើ/ចុះក្រោម Y</span>
+                <span class="slider-val" id="val-body_offset_y">${getSetting('body_offset_y')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="-60" max="60" value="${getSetting('body_offset_y')}" 
+                  oninput="onSettingSliderChange('body_offset_y', this.value, 'px')">
+              </div>
+            </div>
+
+            <!-- Body Font Size -->
+            <div class="control-row">
+              <div class="control-label">
+                <span>🔤 ទំហំអក្សរតួសេចក្ដី (Body Font Size)</span>
+                <span class="slider-val" id="val-body_font_size">${getSetting('body_font_size')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="13" max="24" value="${getSetting('body_font_size')}" 
+                  oninput="onSettingSliderChange('body_font_size', this.value, 'px')">
+              </div>
+            </div>
+
+            <!-- Date Position Y -->
+            <div class="control-row">
+              <div class="control-label">
+                <span>🧭 រំកិលកាលបរិច្ឆេទ ឡើងលើ/ចុះក្រោម Y</span>
+                <span class="slider-val" id="val-date_offset_y">${getSetting('date_offset_y')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="-60" max="60" value="${getSetting('date_offset_y')}" 
+                  oninput="onSettingSliderChange('date_offset_y', this.value, 'px')">
+              </div>
+            </div>
+
+            <!-- Date Position X -->
+            <div class="control-row">
+              <div class="control-label">
+                <span>🧭 រំកិលកាលបរិច្ឆេទ ឆ្វេង/ស្ដាំ X</span>
+                <span class="slider-val" id="val-date_offset_x">${getSetting('date_offset_x')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="-150" max="150" value="${getSetting('date_offset_x')}" 
+                  oninput="onSettingSliderChange('date_offset_x', this.value, 'px')">
+              </div>
+            </div>
+
+            <!-- Signatures Row Position Y -->
+            <div class="control-row">
+              <div class="control-label">
+                <span>🧭 រំកិលជួរហត្ថលេខាទាំង៣ ឡើងលើ/ចុះក្រោម Y</span>
+                <span class="slider-val" id="val-sign_row_offset_y">${getSetting('sign_row_offset_y')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="-120" max="30" value="${getSetting('sign_row_offset_y')}" 
+                  oninput="onSettingSliderChange('sign_row_offset_y', this.value, 'px')">
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px;">
+            <div style="font-weight: bold; margin-bottom: 6px; font-size: 14px; color: var(--primary);">📝 កែប្រែខ្លឹមសារអក្សរ (Edit Text Content)</div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 15px;">កែប្រែចំណងជើង ឈ្មោះវត្ត អាសយដ្ឋាន ពាក្យជូនពរ និងកាលបរិច្ឆេទ (បង្ហាញភ្លាមៗលើ Preview)។</div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">ចំណងជើងធំ</label>
+              <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Moul', serif; font-size: 14px;"
+                value="${escapeHtml(getSetting('cert_title'))}" oninput="onSettingTextChange('cert_title', this.value)">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">ឈ្មោះវត្តក្បាលទំព័រ</label>
+              <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Moul', serif; font-size: 13px;"
+                value="${escapeHtml(getSetting('cert_temple_header'))}" oninput="onSettingTextChange('cert_temple_header', this.value)">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">អាសយដ្ឋានក្បាលទំព័រ</label>
+              <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Battambang', sans-serif; font-size: 13px;"
+                value="${escapeHtml(getSetting('cert_address_header'))}" oninput="onSettingTextChange('cert_address_header', this.value)">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">អនុចំណងជើងទី១ (គណៈសង្ឃ/គណៈកម្មការ)</label>
+              <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Moul', serif; font-size: 13px;"
+                value="${escapeHtml(getSetting('cert_subtitle1'))}" oninput="onSettingTextChange('cert_subtitle1', this.value)">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">អនុចំណងជើងទី២ (អាសយដ្ឋាន)</label>
+              <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Battambang', sans-serif; font-size: 13px;"
+                value="${escapeHtml(getSetting('cert_subtitle2'))}" oninput="onSettingTextChange('cert_subtitle2', this.value)">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">ពាក្យថ្លែងអំណរគុណ</label>
+              <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Moul', serif; font-size: 13px;"
+                value="${escapeHtml(getSetting('cert_thanks_label'))}" oninput="onSettingTextChange('cert_thanks_label', this.value)">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">គោលបំណងកសាង</label>
+              <textarea class="input-text" rows="2" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Battambang', sans-serif; font-size: 13px; resize: vertical;"
+                oninput="onSettingTextChange('cert_purpose_text', this.value)">${escapeHtml(getSetting('cert_purpose_text'))}</textarea>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">ពាក្យប្រសិទ្ធពរ</label>
+              <textarea class="input-text" rows="3" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Battambang', sans-serif; font-size: 13px; resize: vertical;"
+                oninput="onSettingTextChange('cert_blessing_text', this.value)">${escapeHtml(getSetting('cert_blessing_text'))}</textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+              <div>
+                <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">កាលបរិច្ឆេទចន្ទគតិ</label>
+                <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Battambang', sans-serif; font-size: 12px;"
+                  value="${escapeHtml(getSetting('cert_date_lunar'))}" oninput="onSettingTextChange('cert_date_lunar', this.value)">
+              </div>
+              <div>
+                <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">កាលបរិច្ឆេទសុរិយគតិ & ទីកន្លែង</label>
+                <input type="text" class="input-text" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Battambang', sans-serif; font-size: 12px;"
+                  value="${escapeHtml(getSetting('cert_date_solar'))}" oninput="onSettingTextChange('cert_date_solar', this.value)">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+              <div>
+                <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 4px;">ងារហត្ថលេខាទី១ (ឆ្វេង)</label>
+                <input type="text" class="input-text" style="width: 100%; padding: 6px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Moul', serif; font-size: 12px;"
+                  value="${escapeHtml(getSetting('sign2_title'))}" oninput="onSettingTextChange('sign2_title', this.value)">
+              </div>
+              <div>
+                <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 4px;">ងារហត្ថលេខាទី២ (កណ្ដាល)</label>
+                <input type="text" class="input-text" style="width: 100%; padding: 6px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Moul', serif; font-size: 12px;"
+                  value="${escapeHtml(getSetting('sign1_title'))}" oninput="onSettingTextChange('sign1_title', this.value)">
+              </div>
+              <div>
+                <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 4px;">ងារហត្ថលេខាទី៣ (ស្ដាំ)</label>
+                <input type="text" class="input-text" style="width: 100%; padding: 6px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Moul', serif; font-size: 12px;"
+                  value="${escapeHtml(getSetting('sign0_title'))}" oninput="onSettingTextChange('sign0_title', this.value)">
+              </div>
+            </div>
+
+            <div style="margin-top: 15px; text-align: right;">
+              <button class="btn btn-secondary" onclick="resetActiveElementSettings('text_editor')" style="font-size: 12px; padding: 6px 12px;">
+                🔄 កំណត់អក្សរ និងទីតាំងដូចដើម
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
 
       if (activeElementKey === 'typography') {
         panel.innerHTML = `
@@ -2849,10 +3079,17 @@
     // --- Interactive Slider Change ---
     function onSettingSliderChange(key, value, unit = '') {
       appSettings[key] = value;
+      try { localStorage.setItem('appSettings', JSON.stringify(appSettings)); } catch (e) { }
       const valEl = document.getElementById('val-' + key);
       if (valEl) valEl.textContent = value + unit;
 
       updateLiveElement(activeElementKey);
+    }
+
+    function onSettingTextChange(key, value) {
+      appSettings[key] = value;
+      try { localStorage.setItem('appSettings', JSON.stringify(appSettings)); } catch (e) { }
+      renderLiveCertificatePreview();
     }
 
     function updateLiveElement(key) {
@@ -2878,6 +3115,8 @@
         if (rEl) rEl.style.color = getSetting('name_color');
         const cEl = document.getElementById('sample-cert');
         if (cEl) cEl.style.color = getSetting('text_color');
+      } else if (key === 'text_editor') {
+        renderLiveCertificatePreview();
       }
     }
 
@@ -2898,6 +3137,28 @@
       const nameColor = getSetting('name_color') || '#d32f2f';
       const textColor = getSetting('text_color') || '#000000';
 
+      const certTitle = getSetting('cert_title');
+      const templeHeader = getSetting('cert_temple_header');
+      const addressHeader = getSetting('cert_address_header');
+      const subtitle1 = getSetting('cert_subtitle1');
+      const subtitle2 = getSetting('cert_subtitle2');
+      const thanksLabel = getSetting('cert_thanks_label');
+      const purposeText = getSetting('cert_purpose_text');
+      const blessingText = getSetting('cert_blessing_text');
+      const dateLunar = getSetting('cert_date_lunar');
+      const dateSolar = getSetting('cert_date_solar');
+      const sign2Title = getSetting('sign2_title');
+      const sign1Title = getSetting('sign1_title');
+      const sign0Title = getSetting('sign0_title');
+
+      const titleFontSize = getSetting('title_font_size') || 25;
+      const titleOffsetY = getSetting('title_offset_y') !== undefined ? getSetting('title_offset_y') : -15;
+      const bodyFontSize = getSetting('body_font_size') || 18;
+      const bodyOffsetY = getSetting('body_offset_y') !== undefined ? getSetting('body_offset_y') : 0;
+      const dateOffsetY = getSetting('date_offset_y') !== undefined ? getSetting('date_offset_y') : -10;
+      const dateOffsetX = getSetting('date_offset_x') !== undefined ? getSetting('date_offset_x') : 0;
+      const signRowOffsetY = getSetting('sign_row_offset_y') !== undefined ? getSetting('sign_row_offset_y') : -64;
+
       const frameStyle = generateCertificateElementStyles('frame');
       const logoStyle = generateCertificateElementStyles('logo');
       const sign0Style = generateCertificateElementStyles('sign0');
@@ -2915,8 +3176,8 @@
              <!-- Header Row -->
              <div style="display: flex; justify-content: space-between; font-size: 13.33px; color: ${textColor};">
                 <div style="text-align: center; width: 270px; line-height: 1.5; font-family: 'Moul';">
-                   វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)<br>
-                   ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ
+                   ${templeHeader}<br>
+                   ${addressHeader}
                 </div>
                 <div style="text-align: center; width: 220px; line-height: 1.5; font-family: 'Moul';">
                    ព្រះរាជាណាចក្រកម្ពុជា<br>
@@ -2926,11 +3187,11 @@
              </div>
              
              <!-- Main Title -->
-             <div style="text-align: center; margin-top: -15px;">
-                <h1 id="preview-title" style="color: ${titleColor}; font-family: 'Moul'; font-size: 25px; margin: 0px; letter-spacing: 2px;">ប័ណ្ណថ្លែងអំណរគុណ</h1>
-                <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">ព្រះគ្រូចៅអធិការ ថេរានុត្ថេរៈ គណៈកម្មការ វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</p>
-                <p style="font-size: 16px; margin: 0px;">ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</p>
-                <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">សូមថ្លែងអំណរគុណចំពោះ</p>
+             <div style="text-align: center; margin-top: ${titleOffsetY}px;">
+                <h1 id="preview-title" style="color: ${titleColor}; font-family: 'Moul'; font-size: ${titleFontSize}px; margin: 0px; letter-spacing: 2px;">${certTitle}</h1>
+                <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">${subtitle1}</p>
+                <p style="font-size: 16px; margin: 0px;">${subtitle2}</p>
+                <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">${thanksLabel}</p>
              </div>
              
              <!-- Recipient Name -->
@@ -2941,38 +3202,37 @@
              </div>
              
              <!-- Body Text -->
-             <div style="flex-grow: 1; padding: 0px; display: block; width: 100%;">
-                <div style="display: flex; align-items: baseline; font-size: 18px; margin-bottom: 5px; width: 100%;">
+             <div style="flex-grow: 1; padding: 0px; display: block; width: 100%; margin-top: ${bodyOffsetY}px; font-size: ${bodyFontSize}px;">
+                <div style="display: flex; align-items: baseline; font-size: ${bodyFontSize}px; margin-bottom: 5px; width: 100%;">
                    <span style="white-space: nowrap;">ដែលមានសទ្ធាជ្រះថ្លាបានបរិច្ចាគទានជា&nbsp;</span>
                    <span style="flex-grow: 1; border-bottom: 2px dotted #666; color: ${textColor}; font-family: 'Moul'; font-size: 15px; text-align: center; line-height: 1.5;">បច្ច័យកសាង 2,000,000 រៀល និង បច្ច័យបួន 100,000 រៀល</span>
                 </div>
-                <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
-                   ដើម្បីរួមចំណែកកសាង <span style="font-family: 'Moul'; font-size: 15px;">វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</span> ក្នុងព្រះពុទ្ធសាសនា និងសង្គមជាតិផងដែរ។
+                <p style="font-size: ${bodyFontSize}px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
+                   ${purposeText}
                 </p>
-                <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
-                   អាស្រ័យហេតុនេះ យើងខ្ញុំ សូមប្រសិទ្ធពរ បវរសួស្តី ជ័យមង្គល មហាប្រសើរ ជូនដល់អស់លោក លោកស្រី និងពុទ្ធបរិស័ទទាំងអស់
-                   សូមបានប្រកបនូវពុទ្ធពរទាំងឡាយ ៤ប្រការគឺ <span style="font-family: 'Moul'; font-size: 15px;">អាយុ វណ្ណៈ សុខៈ និង ពលៈ</span> កុំបីឃ្លៀងឃ្លាតឡើយ។
+                <p style="font-size: ${bodyFontSize}px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
+                   ${blessingText}
                 </p>
-                <div style="text-align: center; margin-top: -10px; font-size: 15px; display: grid; justify-items: right;">
+                <div style="text-align: center; margin-top: ${dateOffsetY}px; transform: translateX(${dateOffsetX}px); font-size: 15px; display: grid; justify-items: right;">
                    <p style="margin: 0;">
-                      ថ្ងៃអាទិត្យ ៦កើត ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស.២៥៧០<br>
-                      ធ្វើនៅវត្តតាំងគោក ថ្ងៃទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦
+                      ${dateLunar}<br>
+                      ${dateSolar}
                    </p>
                 </div>
              </div>
              
              <!-- Footer Signatures -->
              <div style="display: flex; justify-content: space-between; margin-top: 0px; padding: 0px; font-size: 14px;">
-                <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
-                   <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">គណៈកម្មការ</p>
+                <div style="text-align: center; width: 200px; margin-top: ${signRowOffsetY}px; position: relative;">
+                   <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">${sign2Title}</p>
                    ${sign2Src ? `<img id="preview-img-sign2" src="${sign2Src}" crossorigin="anonymous" alt="" style="${sign2Style}">` : ''}
                 </div>
-                <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
-                   <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">អាចារ្យ</p>
+                <div style="text-align: center; width: 200px; margin-top: ${signRowOffsetY}px; position: relative;">
+                   <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">${sign1Title}</p>
                    ${sign1Src ? `<img id="preview-img-sign1" src="${sign1Src}" crossorigin="anonymous" alt="" style="${sign1Style}">` : ''}
                 </div>
-                <div style="text-align: center; width: 300px; position: relative; margin-top: -64px;">
-                   <p style="margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">ព្រះចៅអធិការ</p>
+                <div style="text-align: center; width: 300px; position: relative; margin-top: ${signRowOffsetY}px;">
+                   <p style="margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">${sign0Title}</p>
                    ${sign0Src ? `<img id="preview-img-sign0" src="${sign0Src}" crossorigin="anonymous" alt="" style="${sign0Style}">` : ''}
                 </div>
              </div>
@@ -3131,6 +3391,24 @@
         appSettings.sign2_left = DEFAULT_SETTINGS.sign2_left;
         appSettings.sign2_opacity = DEFAULT_SETTINGS.sign2_opacity;
         appSettings.sign2_blend = DEFAULT_SETTINGS.sign2_blend;
+      } else if (key === 'text_editor') {
+        const textKeys = [
+          'cert_title', 'cert_temple_header', 'cert_address_header',
+          'cert_subtitle1', 'cert_subtitle2', 'cert_thanks_label',
+          'cert_purpose_text', 'cert_blessing_text',
+          'cert_date_lunar', 'cert_date_solar',
+          'sign2_title', 'sign1_title', 'sign0_title',
+          'title_font_size', 'title_offset_y',
+          'body_font_size', 'body_offset_y',
+          'date_offset_y', 'date_offset_x', 'sign_row_offset_y'
+        ];
+        textKeys.forEach(k => {
+          appSettings[k] = DEFAULT_SETTINGS[k];
+        });
+      } else if (key === 'typography') {
+        appSettings.title_color = DEFAULT_SETTINGS.title_color;
+        appSettings.name_color = DEFAULT_SETTINGS.name_color;
+        appSettings.text_color = DEFAULT_SETTINGS.text_color;
       }
 
       localStorage.setItem('appSettings', JSON.stringify(appSettings));
