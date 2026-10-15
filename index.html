@@ -1763,7 +1763,7 @@
           let amounts = [];
           if (row.construction > 0) amounts.push(`បច្ច័យកសាង ${formatNumber(row.construction)} ${row.con_curr}`);
           if (row.requisites > 0) amounts.push(`បច្ច័យបួន ${formatNumber(row.requisites)} ${row.req_curr}`);
-          if (row.meal > 0) amounts.push(`បច្ច័យម្ហូប ${formatNumber(row.meal)} ${row.meal_curr}`);
+          //if (row.meal > 0) amounts.push(`បច្ច័យម្ហូប ${formatNumber(row.meal)} ${row.meal_curr}`);
           const amountText = amounts.length > 0 ? amounts.join(' និង ') : '';
 
           html += `
