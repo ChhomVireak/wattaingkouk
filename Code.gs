@@ -502,9 +502,11 @@ function saveAllSettings(settingsObject) {
 
 // មុខងារសម្រាប់ចុច Run (ដំណើរការ) លើកដំបូងក្នុង Apps Script ដើម្បីផ្ដល់សិទ្ធិ Google Drive (Authorize)
 function authorizeDriveAccess() {
-  DriveApp.getRootFolder();
+  const folders = DriveApp.getFoldersByName("Kathina_Assets");
+  const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder("Kathina_Assets");
+  folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   SpreadsheetApp.getActiveSpreadsheet();
-  Logger.log("✅ Google Drive Authorization Successful!");
+  Logger.log("✅ Google Drive Full Permission Authorized Successfully! Folder ID: " + folder.getId());
 }
 
 

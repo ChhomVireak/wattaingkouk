@@ -1452,7 +1452,12 @@
       if (response.eventDate) document.getElementById('event-date').innerText = response.eventDate;
 
       if (response.settings) {
-        appSettings = Object.assign({}, appSettings, response.settings);
+        for (let k in response.settings) {
+          const remoteVal = response.settings[k];
+          if (remoteVal !== undefined && remoteVal !== '') {
+            appSettings[k] = remoteVal;
+          }
+        }
         localStorage.setItem('appSettings', JSON.stringify(appSettings));
       }
 
