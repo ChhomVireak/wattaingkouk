@@ -33,6 +33,12 @@ function doPost(e) {
     else if (method === 'deleteMultipleData') result = deleteMultipleData(args[0]);
     else if (method === 'reorderData') result = reorderData(args[0], args[1], args[2]);
     else if (method === 'updateHeader') result = updateHeader(args[0], args[1]);
+    else if (method === 'getAppSettings') result = getAppSettings();
+    else if (method === 'updateAppSetting') result = updateAppSetting(args[0], args[1]);
+    else if (method === 'uploadAppImage') result = uploadAppImage(args[0], args[1], args[2]);
+    else if (method === 'deleteAppImage') result = deleteAppImage(args[0]);
+    else if (method === 'resetAppImage') result = resetAppImage(args[0]);
+    else if (method === 'saveAllSettings') result = saveAllSettings(args[0]);
     else throw new Error('Method not found: ' + method);
 
     return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: result }))
@@ -85,7 +91,12 @@ function getData() {
     const title2 = data.length > 1 ? String(data[1][0] || "").trim() : "";
     const eventDate = data.length > 2 ? String(data[2][0] || "").trim() : "";
     
-    return { rows: rows, updated: updated, title1: title1, title2: title2, eventDate: eventDate };
+    let settings = {};
+    try {
+      settings = getAppSettings();
+    } catch(err) {}
+
+    return { rows: rows, updated: updated, title1: title1, title2: title2, eventDate: eventDate, settings: settings };
   } catch (error) {
     throw new Error(error.message);
   }
@@ -341,3 +352,152 @@ function updateHeader(rowIndex, value) {
     throw new Error(error.message);
   }
 }
+
+// --- Image & App Settings Management ---
+const SETTINGS_SHEET_NAME = 'AppSettings';
+
+function getAppSettings() {
+  try {
+    const ss = SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SETTINGS_SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SETTINGS_SHEET_NAME);
+      sheet.appendRow(['Key', 'Value', 'Updated']);
+      sheet.appendRow(['frame', '', '']);
+      sheet.appendRow(['logo', '', '']);
+      sheet.appendRow(['sign0', '', '']);
+      sheet.appendRow(['sign1', '', '']);
+      sheet.appendRow(['sign2', '', '']);
+    }
+    const data = sheet.getDataRange().getValues();
+    const settings = {};
+    for (let i = 1; i < data.length; i++) {
+      const key = String(data[i][0]).trim();
+      const val = String(data[i][1] || '').trim();
+      if (key) {
+        settings[key] = val;
+      }
+    }
+    return settings;
+  } catch (e) {
+    return {};
+  }
+}
+
+function updateAppSetting(key, value) {
+  try {
+    const ss = SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SETTINGS_SHEET_NAME);
+    if (!sheet) {
+      getAppSettings();
+      sheet = ss.getSheetByName(SETTINGS_SHEET_NAME);
+    }
+    const data = sheet.getDataRange().getValues();
+    let found = false;
+    const now = new Date().toLocaleString();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]).trim() === key) {
+        sheet.getRange(i + 1, 2).setValue(value);
+        sheet.getRange(i + 1, 3).setValue(now);
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      sheet.appendRow([key, value, now]);
+    }
+    return getAppSettings();
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
+function uploadAppImage(key, base64Data, fileName) {
+  try {
+    const folderName = "Kathina_Assets";
+    const folders = DriveApp.getFoldersByName(folderName);
+    const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(folderName);
+    try {
+      folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch(err) {}
+
+    let contentType = "image/png";
+    let pureBase64 = base64Data;
+    if (base64Data.indexOf('data:') === 0 && base64Data.indexOf(';base64,') !== -1) {
+      const parts = base64Data.split(';base64,');
+      contentType = parts[0].replace('data:', '');
+      pureBase64 = parts[1];
+    }
+    
+    const decoded = Utilities.base64Decode(pureBase64);
+    const name = (key + "_" + new Date().getTime() + (fileName ? ("_" + fileName) : ".png"));
+    const blob = Utilities.newBlob(decoded, contentType, name);
+    
+    const file = folder.createFile(blob);
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch(err) {}
+    
+    const publicUrl = "https://lh3.googleusercontent.com/d/" + file.getId();
+    updateAppSetting(key, publicUrl);
+    
+    return { success: true, url: publicUrl, settings: getAppSettings() };
+  } catch (e) {
+    throw new Error("បរាជ័យក្នុងការ Upload រូបភាព៖ " + e.message);
+  }
+}
+
+function deleteAppImage(key) {
+  try {
+    updateAppSetting(key, 'none');
+    return { success: true, settings: getAppSettings() };
+  } catch (e) {
+    throw new Error("បរាជ័យក្នុងការលុបរូបភាព៖ " + e.message);
+  }
+}
+
+function resetAppImage(key) {
+  try {
+    updateAppSetting(key, '');
+    return { success: true, settings: getAppSettings() };
+  } catch (e) {
+    throw new Error("បរាជ័យក្នុងការកំណត់រូបលំនាំដើម៖ " + e.message);
+  }
+}
+
+function saveAllSettings(settingsObject) {
+  try {
+    const ss = SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SETTINGS_SHEET_NAME);
+    if (!sheet) {
+      getAppSettings();
+      sheet = ss.getSheetByName(SETTINGS_SHEET_NAME);
+    }
+    const data = sheet.getDataRange().getValues();
+    const existingKeys = {};
+    for (let i = 1; i < data.length; i++) {
+      existingKeys[String(data[i][0]).trim()] = i + 1;
+    }
+    const now = new Date().toLocaleString();
+    const rowsToAdd = [];
+    
+    for (let key in settingsObject) {
+      if (settingsObject.hasOwnProperty(key)) {
+        const val = String(settingsObject[key] !== undefined ? settingsObject[key] : '');
+        if (existingKeys[key]) {
+          sheet.getRange(existingKeys[key], 2, 1, 2).setValues([[val, now]]);
+        } else {
+          rowsToAdd.push([key, val, now]);
+        }
+      }
+    }
+    if (rowsToAdd.length > 0) {
+      sheet.getRange(sheet.getLastRow() + 1, 1, rowsToAdd.length, 3).setValues(rowsToAdd);
+    }
+    return { success: true, settings: getAppSettings() };
+  } catch (e) {
+    throw new Error("បរាជ័យក្នុងការរក្សាទុកការកំណត់៖ " + e.message);
+  }
+}
+
+

@@ -816,6 +816,107 @@
       font-size: 16px;
       font-weight: 500;
     }
+
+    /* Settings Route & Designer Styles */
+    .nav-tab {
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab:hover {
+      opacity: 0.95;
+      transform: translateY(-2px);
+    }
+
+    .pill-btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #fff;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Battambang', sans-serif;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--primary);
+      background: #fdf2f2;
+    }
+
+    .pill-btn.active {
+      background: var(--primary);
+      color: var(--secondary);
+      border-color: var(--primary);
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(139, 28, 28, 0.25);
+    }
+
+    .control-row {
+      margin-bottom: 16px;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .control-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .control-slider-wrap input[type="range"] {
+      flex: 1;
+      accent-color: var(--primary);
+      height: 6px;
+      cursor: pointer;
+    }
+
+    .control-slider-wrap .slider-val {
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: bold;
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      min-width: 55px;
+      text-align: right;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+    }
+
+    .color-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .color-input-wrap input[type="color"] {
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: none;
+    }
+
+    @media (max-width: 992px) {
+      .settings-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
   </style>
 </head>
 
@@ -838,6 +939,19 @@
       title="ចុចទីនេះដើម្បីកែប្រែកាលបរិច្ឆេទ"></span>
     <div class="subtitle" id="app-title2" contenteditable="false" title="ចុចទីនេះដើម្បីកែប្រែឈ្មោះវត្ត">
       សូមអនុមោទនាបុណ្យកឋិនទានដោយសេចក្តីជ្រះថ្លា</div>
+
+    <!-- Top Route Navigation Tabs -->
+    <div class="nav-tabs-wrapper"
+      style="margin-top: 18px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+      <button class="nav-tab active" id="tab-data" onclick="switchRoute('data')"
+        style="display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 30px; border: 2px solid var(--secondary); background: var(--secondary); color: var(--primary); font-family: 'Moul', serif; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+        📋 បញ្ជីទិន្នន័យ
+      </button>
+      <button class="nav-tab" id="tab-settings" onclick="switchRoute('settings')"
+        style="display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 30px; border: 2px solid var(--secondary); background: transparent; color: #fff; font-family: 'Moul', serif; font-size: 14px; cursor: pointer; transition: all 0.2s;">
+        ⚙️ ការកំណត់ & រចនាប័ណ្ណ
+      </button>
+    </div>
   </header>
 
   <div class="container">
@@ -929,6 +1043,9 @@
             style="background-color: var(--info); border: 1px solid var(--border);">បោះពុម្ពប័ណ្ណសរសើរ</button>
           <!-- <button class="btn btn-secondary" onclick="resetPrintStatus()"
             style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;" title="លុបសញ្ញា ✓ ចេញពីប័ណ្ណទាំងអស់">សម្អាតសញ្ញា ✓</button> -->
+          <button class="btn btn-secondary" onclick="switchRoute('settings')"
+            style="background-color: #fff; border: 1px solid var(--border);" title="ចូលទៅកាន់ទំព័ររចនាប័ណ្ណសរសើរ">⚙️
+            រចនាប័ណ្ណ & រូបភាព</button>
           <button class="btn btn-secondary" onclick="printList()"
             style="background-color: #fff; border: 1px solid var(--border);">បោះពុម្ពបញ្ជី</button>
           <button class="btn btn-secondary" onclick="printSummary()"
@@ -962,6 +1079,87 @@
 
       <div class="table-responsive" id="table-container"></div>
 
+    </div>
+
+    <!-- SETTINGS & CERTIFICATE DESIGNER ROUTE VIEW -->
+    <div id="settings-view" style="display: none; margin-top: 10px;">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; background: #fff; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+        <div>
+          <h2 style="font-family: 'Moul', serif; color: var(--primary); margin: 0 0 4px 0; font-size: 20px;">⚙️ ការកំណត់
+            & រចនាប័ណ្ណសរសើរ</h2>
+          <p style="margin: 0; color: #666; font-size: 14px;">កែប្រែរូបភាព, ទំហំ (W/H), Zoom In/Out, ទីតាំង, ភាពស្រអាប់
+            និងពណ៌ ហើយមើលលទ្ធផលផ្ទាល់ភ្លាមៗ</p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <button class="btn btn-secondary" onclick="resetAllSettingsToDefault()"
+            style="background: #fff; border: 1px solid var(--border);">🔄 កំណត់ដូចដើមទាំងអស់</button>
+          <button class="btn btn-primary" id="btn-save-settings" onclick="saveCurrentSettings()"
+            style="background: var(--success); border-color: var(--success); font-weight: bold; font-size: 15px; padding: 10px 24px;">
+            💾 រក្សាទុកការកំណត់
+          </button>
+        </div>
+      </div>
+
+      <div class="settings-grid"
+        style="display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start;">
+
+        <!-- LEFT: Controls Card -->
+        <div class="settings-controls-card"
+          style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+
+          <div
+            style="font-weight: bold; margin-bottom: 12px; font-size: 14px; color: var(--primary); display: flex; align-items: center; justify-content: space-between;">
+            <span>ជ្រើសរើសផ្នែកដែលត្រូវរចនា៖</span>
+            <span id="active-element-badge" style="font-size: 12px; font-weight: normal; color: #666;"></span>
+          </div>
+
+          <div class="element-pills" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;">
+            <button class="pill-btn active" onclick="selectElementToEdit('frame')" id="pill-frame">🖼️
+              ស៊ុមប័ណ្ណ</button>
+            <button class="pill-btn" onclick="selectElementToEdit('logo')" id="pill-logo">🌟 ឡូហ្គោវត្ត</button>
+            <button class="pill-btn" onclick="selectElementToEdit('sign0')" id="pill-sign0">✍️ ព្រះចៅអធិការ</button>
+            <button class="pill-btn" onclick="selectElementToEdit('sign1')" id="pill-sign1">✍️ អាចារ្យ</button>
+            <button class="pill-btn" onclick="selectElementToEdit('sign2')" id="pill-sign2">✍️ គណៈកម្មការ</button>
+            <button class="pill-btn" onclick="selectElementToEdit('typography')" id="pill-typography">🎨
+              ពណ៌អក្សរ</button>
+          </div>
+
+          <!-- Dynamic Controls Panel injected by JS -->
+          <div id="active-element-panel"></div>
+
+        </div>
+
+        <!-- RIGHT: Interactive Live Certificate Preview -->
+        <div class="settings-preview-card"
+          style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 20px; width: 65%;">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+            <div style="font-weight: bold; color: var(--primary); font-family: 'Moul', serif; font-size: 15px;">
+              👁️ ទិដ្ឋភាពប័ណ្ណជាក់ស្ដែង (Live Preview)
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button class="btn btn-secondary" onclick="adjustPreviewScale(-0.05)"
+                style="padding: 4px 10px; font-size: 12px;">🔍 -</button>
+              <span id="preview-scale-text"
+                style="font-size: 12px; font-weight: bold; min-width: 48px; text-align: center;">100%</span>
+              <button class="btn btn-secondary" onclick="adjustPreviewScale(0.05)"
+                style="padding: 4px 10px; font-size: 12px;">🔍 +</button>
+              <button class="btn btn-secondary" onclick="fitPreviewScale()"
+                style="padding: 4px 10px; font-size: 12px;">Fit</button>
+            </div>
+          </div>
+
+          <div id="live-preview-viewport"
+            style="width: 100%; overflow: auto; background: #3f4448; border-radius: 8px; padding: 25px 15px; display: flex; justify-content: center; min-height: 480px;">
+            <div id="live-preview-container"
+              style="transform-origin: top center; transition: transform 0.05s ease-out;">
+              <!-- Sample Certificate Canvas injected by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -1118,7 +1316,13 @@
             deleteData: function () { this._callApi('deleteData', Array.from(arguments)); },
             deleteMultipleData: function () { this._callApi('deleteMultipleData', Array.from(arguments)); },
             reorderData: function () { this._callApi('reorderData', Array.from(arguments)); },
-            updateHeader: function () { this._callApi('updateHeader', Array.from(arguments)); }
+            updateHeader: function () { this._callApi('updateHeader', Array.from(arguments)); },
+            getAppSettings: function () { this._callApi('getAppSettings', Array.from(arguments)); },
+            updateAppSetting: function () { this._callApi('updateAppSetting', Array.from(arguments)); },
+            uploadAppImage: function () { this._callApi('uploadAppImage', Array.from(arguments)); },
+            deleteAppImage: function () { this._callApi('deleteAppImage', Array.from(arguments)); },
+            resetAppImage: function () { this._callApi('resetAppImage', Array.from(arguments)); },
+            saveAllSettings: function () { this._callApi('saveAllSettings', Array.from(arguments)); }
           }
         }
       };
@@ -1129,6 +1333,7 @@
     let currentFilteredData = [];
     let currentPage = 1;
     let amountsVisible = false;
+    let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{}');
 
     function showToast(message) {
       const toast = document.getElementById('custom-toast');
@@ -1201,6 +1406,10 @@
         if (this.innerText.trim() !== '') google.script.run.updateHeader(3, this.innerText);
       });
 
+      // Listen for URL hash changes for routing (#settings or #data)
+      window.addEventListener('hashchange', handleRouteFromHash);
+      handleRouteFromHash();
+
       fetchData();
     }
 
@@ -1223,7 +1432,13 @@
     function onFailure(error) {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('action-loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
+      if (currentRoute === 'settings') {
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('settings-view').style.display = 'block';
+      } else {
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('settings-view').style.display = 'none';
+      }
       alert('មានបញ្ហា៖ ' + error.message);
     }
 
@@ -1236,12 +1451,24 @@
       if (response.title2) document.getElementById('app-title2').innerText = response.title2;
       if (response.eventDate) document.getElementById('event-date').innerText = response.eventDate;
 
+      if (response.settings) {
+        appSettings = Object.assign({}, appSettings, response.settings);
+        localStorage.setItem('appSettings', JSON.stringify(appSettings));
+      }
+
       populateDropdowns();
       applyFilters(); // will renderTable() internally
 
       document.getElementById('loading').style.display = 'none';
       document.getElementById('action-loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
+      if (currentRoute === 'settings') {
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('settings-view').style.display = 'block';
+        if (typeof initSettingsView === 'function') initSettingsView();
+      } else {
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('settings-view').style.display = 'none';
+      }
       closeModal();
     }
 
@@ -1623,7 +1850,14 @@
     function closeA4Preview() {
       document.getElementById('a4-export-wrapper').style.display = 'none';
       document.querySelector('.container').style.display = 'block';
-      renderTable();
+      if (currentRoute === 'settings') {
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('settings-view').style.display = 'block';
+      } else {
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('settings-view').style.display = 'none';
+        renderTable();
+      }
     }
 
     async function downloadJPG() {
@@ -1766,17 +2000,33 @@
           //if (row.meal > 0) amounts.push(`បច្ច័យម្ហូប ${formatNumber(row.meal)} ${row.meal_curr}`);
           const amountText = amounts.length > 0 ? amounts.join(' និង ') : '';
 
+          const frameSrc = getImageSrc('frame', './Frame2.png');
+          const logoSrc = getImageSrc('logo', './backLogo.png');
+          const sign2Src = getImageSrc('sign2', './Sign2.png');
+          const sign1Src = getImageSrc('sign1', './Sign1.png');
+          const sign0Src = getImageSrc('sign0', './Sign0.png');
+
+          const frameStyle = generateCertificateElementStyles('frame');
+          const logoStyle = generateCertificateElementStyles('logo');
+          const sign0Style = generateCertificateElementStyles('sign0');
+          const sign1Style = generateCertificateElementStyles('sign1');
+          const sign2Style = generateCertificateElementStyles('sign2');
+
+          const titleColor = getSetting('title_color') || '#d32f2f';
+          const nameColor = getSetting('name_color') || '#d32f2f';
+          const textColor = getSetting('text_color') || '#000000';
+
           html += `
-            <div class="a4-page certificate-container" style="width: 297mm; height: 210mm; background: #fff; position: relative; overflow: hidden; font-family: 'Battambang', sans-serif; box-sizing: border-box; page-break-after: always; padding: 0; margin: 0 auto 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+            <div class="a4-page certificate-container" style="width: 297mm; height: 210mm; background: #fff; position: relative; overflow: hidden; font-family: 'Battambang', sans-serif; box-sizing: border-box; page-break-after: always; padding: 0; margin: 0 auto 20px auto; box-shadow: 0 0 10px rgba(0,0,0,0.2); color: ${textColor};">
               
               <!-- Background Image using IMG tag for reliable printing -->
-              <img src="./Frame2.png" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; object-fit: fill; z-index: 1;">
-              <img src="./backLogo.png" alt="" style="position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); width: 400px; object-fit: fill; z-index: 1; opacity: 0.2;">
+              ${frameSrc ? `<img src="${frameSrc}" crossorigin="anonymous" style="${frameStyle}">` : ''}
+              ${logoSrc ? `<img src="${logoSrc}" crossorigin="anonymous" alt="" style="${logoStyle}">` : ''}
               <!-- Inner Content Wrapper -->
               <div style="position: absolute; top: 45mm; bottom: 45mm; left: 34mm; right: 34mm; display: flex; flex-direction: column; z-index: 2;">
                  
                  <!-- Header Row (Top Left & Top Right) -->
-                 <div style="display: flex; justify-content: space-between; font-size: 13.33px; color: #000;">
+                 <div style="display: flex; justify-content: space-between; font-size: 13.33px; color: ${textColor};">
                     <div style="text-align: center; width: 270px; line-height: 1.5; font-family: 'Moul';">
                        វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)<br>
                        ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ
@@ -1790,7 +2040,7 @@
                  
                  <!-- Main Title & Subtitle -->
                  <div style="text-align: center; margin-top: -15px;">
-                    <h1 style="color: #d32f2f; font-family: 'Moul'; font-size: 25px; margin: 0px; letter-spacing: 2px; text-shadow: none;">ប័ណ្ណថ្លែងអំណរគុណ</h1>
+                    <h1 style="color: ${titleColor}; font-family: 'Moul'; font-size: 25px; margin: 0px; letter-spacing: 2px; text-shadow: none;">ប័ណ្ណថ្លែងអំណរគុណ</h1>
                     <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">ព្រះគ្រូចៅអធិការ ថេរានុត្ថេរៈ គណៈកម្មការ វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</p>
                     <p style="font-size: 16px; margin: 0px;">ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</p>
                     <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">សូមថ្លែងអំណរគុណចំពោះ</p>
@@ -1798,43 +2048,46 @@
                  
                  <!-- Recipient Name -->
                  <div style="text-align: center; margin-bottom: 5px; display: block; width: 100%;">
-                    <h2 style="color: #d32f2f; font-family: 'Moul'; font-size: 16px; margin: 0; padding: 0; display: block; border-bottom: 2px dotted #666; line-height: 1.5;">
+                    <h2 style="color: ${nameColor}; font-family: 'Moul'; font-size: 16px; margin: 0; padding: 0; display: block; border-bottom: 2px dotted #666; line-height: 1.5;">
                        ${escapeHtml(row.name)}
                     </h2>
                  </div>
                  
                  <!-- Body Text -->
                  <div style="flex-grow: 1; padding: 0px; display: block; width: 100%;">
-                    <div style="display: flex; align-items: baseline; font-size: 16px; margin-bottom: 5px; width: 100%;">
+                    <div style="display: flex; align-items: baseline; font-size: 18px; margin-bottom: 5px; width: 100%;">
                        <span style="white-space: nowrap;">ដែលមានសទ្ធាជ្រះថ្លាបានបរិច្ចាគទានជា&nbsp;</span>
-                       <span style="flex-grow: 1; border-bottom: 2px dotted #666; color: #000; font-family: 'Moul'; font-size: 15px; text-align: center; line-height: 1.5;">${amountText}</span>
+                       <span style="flex-grow: 1; border-bottom: 2px dotted #666; color: ${textColor}; font-family: 'Moul'; font-size: 15px; text-align: center; line-height: 1.5;">${amountText}</span>
                     </div>
-                    <p style="font-size: 16px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
+                    <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
                        ដើម្បីរួមចំណែកកសាង <span style="font-family: 'Moul'; font-size: 15px;">វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</span> ក្នុងព្រះពុទ្ធសាសនា និងសង្គមជាតិផងដែរ។
                     </p>
-                    <p style="font-size: 16px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
+                    <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
                        អាស្រ័យហេតុនេះ យើងខ្ញុំ សូមប្រសិទ្ធពរ បវរសួស្តី ជ័យមង្គល មហាប្រសើរ ជូនដល់អស់លោក លោកស្រី និងពុទ្ធបរិស័ទទាំងអស់
                        សូមបានប្រកបនូវពុទ្ធពរទាំងឡាយ ៤ប្រការគឺ <span style="font-family: 'Moul'; font-size: 15px;">អាយុ វណ្ណៈ សុខៈ និង ពលៈ</span> កុំបីឃ្លៀងឃ្លាតឡើយ។
                     </p>
-                 </div>
-                 
-                 <!-- Footer Signatures -->
-                 <div style="display: flex; justify-content: space-between; margin-top: 0px; padding: 0px; font-size: 14px;">
-                    <div style="text-align: center; width: 200px; margin-top: 20px; position: relative;">
-                       <p style=" margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">គណៈកម្មការ</p>
-                       <img src="./Sign2.png" alt="" style="width: 100px; height: 100px; position: absolute; left: 50%; transform: translateX(-50%); top: 10px; z-index: 1;">
-                    </div>
-                    <div style="text-align: center; width: 200px; margin-top: 20px; position: relative;">
-                       <p style=" margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">អាចារ្យ</p>
-                       <img src="./Sign1.png" alt="" style="width: 100px; height: 100px; position: absolute; left: 50%; transform: translateX(-50%); top: 10px; z-index: 1;">
-                    </div>
-                    <div style="text-align: center; width: 300px; position: relative; margin-top: 0px;">
-                       <p style="margin: 0px;">ថ្ងៃអាទិត្យ ៦កើត ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស.២៥៧០</p>
-                       <p style="margin: 0px;">ធ្វើនៅវត្តតាំងគោក ថ្ងៃទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦</p>
-                       <p style=" margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">ព្រះចៅអធិការ</p>
-                       <img src="./Sign0.png" alt="" style="width: 5cm; position: absolute; left: 50%; transform: translateX(-50%); top: -40px; z-index: 1; mix-blend-mode: multiply;">
-                    </div>
-                 </div>
+                     <div style="text-align: center; margin-top: -10px; font-size: 15px; display: grid; justify-items: right;">
+                       <p style="margin: 0;">
+                         ថ្ងៃអាទិត្យ ៦កើត ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស.២៥៧០<br>
+                         ធ្វើនៅវត្តតាំងគោក ថ្ងៃទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦
+                       </p>
+                     </div>
+                  </div>
+                  <!-- Footer Signatures -->
+                  <div style="display: flex; justify-content: space-between; margin-top: 0px; padding: 0px; font-size: 14px;">
+                     <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
+                        <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">គណៈកម្មការ</p>
+                        ${sign2Src ? `<img src="${sign2Src}" crossorigin="anonymous" alt="" style="${sign2Style}">` : ''}
+                     </div>
+                     <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
+                       <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">អាចារ្យ</p>
+                       ${sign1Src ? `<img src="${sign1Src}" crossorigin="anonymous" alt="" style="${sign1Style}">` : ''}
+                     </div>
+                     <div style="text-align: center; width: 300px; position: relative; margin-top: -64px;">
+                       <p style="margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">ព្រះចៅអធិការ</p>
+                       ${sign0Src ? `<img src="${sign0Src}" crossorigin="anonymous" alt="" style="${sign0Style}">` : ''}
+                     </div>
+                  </div>
                  
               </div>
             </div>
@@ -2079,6 +2332,773 @@
       ptrStartY = 0;
       ptrCurrentY = 0;
     }, { passive: true });
+
+    // ==========================================
+    // --- SETTINGS ROUTE & DESIGNER ENGINE ---
+    // ==========================================
+
+    const DEFAULT_SETTINGS = {
+      // Frame
+      frame: '',
+      frame_width: 100,
+      frame_height: 100,
+      frame_zoom: 100,
+      frame_opacity: 100,
+
+      // Logo Watermark
+      logo: '',
+      logo_width: 400,
+      logo_zoom: 100,
+      logo_top: 55,
+      logo_left: 50,
+      logo_opacity: 20,
+
+      // Sign0 (Abbot ព្រះចៅអធិការ)
+      sign0: '',
+      sign0_width: 190,
+      sign0_zoom: 100,
+      sign0_top: -56,
+      sign0_left: 0,
+      sign0_opacity: 100,
+      sign0_blend: 'multiply',
+
+      // Sign1 (Achary អាចារ្យ)
+      sign1: '',
+      sign1_width: 100,
+      sign1_height: 100,
+      sign1_zoom: 100,
+      sign1_top: 10,
+      sign1_left: 0,
+      sign1_opacity: 100,
+      sign1_blend: 'normal',
+
+      // Sign2 (Committee គណៈកម្មការ)
+      sign2: '',
+      sign2_width: 100,
+      sign2_height: 100,
+      sign2_zoom: 100,
+      sign2_top: 10,
+      sign2_left: 0,
+      sign2_opacity: 100,
+      sign2_blend: 'normal',
+
+      // Typography Colors
+      title_color: '#d32f2f',
+      name_color: '#d32f2f',
+      text_color: '#000000'
+    };
+
+    function getSetting(key) {
+      if (appSettings && appSettings[key] !== undefined && appSettings[key] !== '') {
+        return appSettings[key];
+      }
+      return DEFAULT_SETTINGS[key] !== undefined ? DEFAULT_SETTINGS[key] : '';
+    }
+
+    function getImageSrc(key, defaultSrc) {
+      const val = getSetting(key);
+      if (val === 'none') return '';
+      if (val && val !== '') return val;
+      return defaultSrc;
+    }
+
+    // --- Route Switching Logic ---
+    let currentRoute = 'data';
+    function switchRoute(route, updateHash = true) {
+      currentRoute = route;
+      if (updateHash) {
+        window.location.hash = (route === 'settings' ? '#settings' : '#data');
+      }
+
+      const tabData = document.getElementById('tab-data');
+      const tabSettings = document.getElementById('tab-settings');
+      const content = document.getElementById('content');
+      const settingsView = document.getElementById('settings-view');
+
+      if (route === 'settings') {
+        if (content) content.style.display = 'none';
+        if (settingsView) settingsView.style.display = 'block';
+        if (tabData) {
+          tabData.style.background = 'transparent';
+          tabData.style.color = '#fff';
+        }
+        if (tabSettings) {
+          tabSettings.style.background = 'var(--secondary)';
+          tabSettings.style.color = 'var(--primary)';
+        }
+        initSettingsView();
+      } else {
+        if (settingsView) settingsView.style.display = 'none';
+        if (content) content.style.display = 'block';
+        if (tabData) {
+          tabData.style.background = 'var(--secondary)';
+          tabData.style.color = 'var(--primary)';
+        }
+        if (tabSettings) {
+          tabSettings.style.background = 'transparent';
+          tabSettings.style.color = '#fff';
+        }
+      }
+    }
+
+    function handleRouteFromHash() {
+      const hash = (window.location.hash || '').toLowerCase();
+      if (hash === '#settings') {
+        switchRoute('settings', false);
+      } else {
+        switchRoute('data', false);
+      }
+    }
+
+    // --- Certificate CSS Generator ---
+    function generateCertificateElementStyles(key) {
+      if (key === 'frame') {
+        const zoom = (parseFloat(getSetting('frame_zoom')) || 100) / 100;
+        const w = parseFloat(getSetting('frame_width')) || 100;
+        const h = parseFloat(getSetting('frame_height')) || 100;
+        const op = (getSetting('frame_opacity') !== '' ? parseFloat(getSetting('frame_opacity')) : 100) / 100;
+        return `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${zoom}); width: ${w}%; height: ${h}%; object-fit: fill; z-index: 1; opacity: ${op}; pointer-events: none;`;
+      }
+      if (key === 'logo') {
+        const zoom = (parseFloat(getSetting('logo_zoom')) || 100) / 100;
+        const w = parseFloat(getSetting('logo_width')) || 400;
+        const top = getSetting('logo_top') !== '' ? parseFloat(getSetting('logo_top')) : 55;
+        const left = getSetting('logo_left') !== '' ? parseFloat(getSetting('logo_left')) : 50;
+        const op = (getSetting('logo_opacity') !== '' ? parseFloat(getSetting('logo_opacity')) : 20) / 100;
+        return `position: absolute; top: ${top}%; left: ${left}%; transform: translate(-50%, -50%) scale(${zoom}); width: ${w}px; object-fit: fill; z-index: 1; opacity: ${op}; pointer-events: none;`;
+      }
+      if (key === 'sign0') {
+        const zoom = (parseFloat(getSetting('sign0_zoom')) || 100) / 100;
+        const w = parseFloat(getSetting('sign0_width')) || 190;
+        const top = getSetting('sign0_top') !== '' ? parseFloat(getSetting('sign0_top')) : -56;
+        const left = getSetting('sign0_left') !== '' ? parseFloat(getSetting('sign0_left')) : 0;
+        const op = (getSetting('sign0_opacity') !== '' ? parseFloat(getSetting('sign0_opacity')) : 100) / 100;
+        const blend = getSetting('sign0_blend') || 'multiply';
+        return `width: ${w}px; position: absolute; left: calc(50% + ${left}px); transform: translateX(-50%) scale(${zoom}); top: ${top}px; z-index: 1; mix-blend-mode: ${blend}; opacity: ${op};`;
+      }
+      if (key === 'sign1') {
+        const zoom = (parseFloat(getSetting('sign1_zoom')) || 100) / 100;
+        const w = parseFloat(getSetting('sign1_width')) || 100;
+        const h = parseFloat(getSetting('sign1_height')) || 100;
+        const top = getSetting('sign1_top') !== '' ? parseFloat(getSetting('sign1_top')) : 10;
+        const left = getSetting('sign1_left') !== '' ? parseFloat(getSetting('sign1_left')) : 0;
+        const op = (getSetting('sign1_opacity') !== '' ? parseFloat(getSetting('sign1_opacity')) : 100) / 100;
+        const blend = getSetting('sign1_blend') || 'normal';
+        return `width: ${w}px; height: ${h}px; position: absolute; left: calc(50% + ${left}px); transform: translateX(-50%) scale(${zoom}); top: ${top}px; z-index: 1; mix-blend-mode: ${blend}; opacity: ${op};`;
+      }
+      if (key === 'sign2') {
+        const zoom = (parseFloat(getSetting('sign2_zoom')) || 100) / 100;
+        const w = parseFloat(getSetting('sign2_width')) || 100;
+        const h = parseFloat(getSetting('sign2_height')) || 100;
+        const top = getSetting('sign2_top') !== '' ? parseFloat(getSetting('sign2_top')) : 10;
+        const left = getSetting('sign2_left') !== '' ? parseFloat(getSetting('sign2_left')) : 0;
+        const op = (getSetting('sign2_opacity') !== '' ? parseFloat(getSetting('sign2_opacity')) : 100) / 100;
+        const blend = getSetting('sign2_blend') || 'normal';
+        return `width: ${w}px; height: ${h}px; position: absolute; left: calc(50% + ${left}px); transform: translateX(-50%) scale(${zoom}); top: ${top}px; z-index: 1; mix-blend-mode: ${blend}; opacity: ${op};`;
+      }
+      return '';
+    }
+
+    // --- Active Element Selection & Controls ---
+    let activeElementKey = 'frame';
+
+    function initSettingsView() {
+      selectElementToEdit(activeElementKey);
+      renderLiveCertificatePreview();
+    }
+
+    function selectElementToEdit(key) {
+      activeElementKey = key;
+      document.querySelectorAll('.element-pills .pill-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('pill-' + key);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const titles = {
+        frame: 'រូបស៊ុមប័ណ្ណ (Frame)',
+        logo: 'រូបសញ្ញាវត្ត (Watermark Logo)',
+        sign0: 'ហត្ថលេខាព្រះចៅអធិការ (Abbot)',
+        sign1: 'ហត្ថលេខាអាចារ្យ (Achary)',
+        sign2: 'ហត្ថលេខាគណៈកម្មការ (Committee)',
+        typography: 'ពណ៌អក្សរ (Colors)'
+      };
+      const badge = document.getElementById('active-element-badge');
+      if (badge && titles[key]) badge.textContent = titles[key];
+
+      renderActiveElementControls();
+    }
+
+    function renderActiveElementControls() {
+      const panel = document.getElementById('active-element-panel');
+      if (!panel) return;
+
+      if (activeElementKey === 'typography') {
+        panel.innerHTML = `
+          <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px;">
+            <div style="font-weight: bold; margin-bottom: 6px; font-size: 14px; color: var(--primary);">🎨 កំណត់ពណ៌អក្សរលើប័ណ្ណ</div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 15px;">កែប្រែពណ៌ចំណងជើង ឈ្មោះអ្នកទទួល និងពណ៌អក្សរទូទៅ។</div>
+            
+            <div class="control-row">
+              <div class="control-label"><span>ពណ៌ចំណងជើង ("ប័ណ្ណថ្លែងអំណរគុណ")</span></div>
+              <div class="color-input-wrap">
+                <input type="color" value="${getSetting('title_color')}" oninput="onSettingSliderChange('title_color', this.value)">
+                <span style="font-family: monospace; font-size: 13px;">${getSetting('title_color')}</span>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="control-label"><span>ពណ៌ឈ្មោះម្ចាស់កឋិនទាន</span></div>
+              <div class="color-input-wrap">
+                <input type="color" value="${getSetting('name_color')}" oninput="onSettingSliderChange('name_color', this.value)">
+                <span style="font-family: monospace; font-size: 13px;">${getSetting('name_color')}</span>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="control-label"><span>ពណ៌អក្សរខ្លឹមសារទូទៅ</span></div>
+              <div class="color-input-wrap">
+                <input type="color" value="${getSetting('text_color')}" oninput="onSettingSliderChange('text_color', this.value)">
+                <span style="font-family: monospace; font-size: 13px;">${getSetting('text_color')}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Image elements: frame, logo, sign0, sign1, sign2
+      const slotInfo = {
+        frame: { title: 'រូបស៊ុមប័ណ្ណ (Frame)', defaultSrc: './Frame2.png', hasHeight: true, isPercent: true },
+        logo: { title: 'រូបសញ្ញាវត្ត (Watermark Logo)', defaultSrc: './backLogo.png', hasHeight: false, isPercent: false },
+        sign0: { title: 'ហត្ថលេខាព្រះចៅអធិការ (Abbot)', defaultSrc: './Sign0.png', hasHeight: false, isPercent: false },
+        sign1: { title: 'ហត្ថលេខាអាចារ្យ (Achary)', defaultSrc: './Sign1.png', hasHeight: true, isPercent: false },
+        sign2: { title: 'ហត្ថលេខាគណៈកម្មការ (Committee)', defaultSrc: './Sign2.png', hasHeight: true, isPercent: false }
+      }[activeElementKey];
+
+      const currentSrc = getImageSrc(activeElementKey, slotInfo.defaultSrc);
+      const isNone = (getSetting(activeElementKey) === 'none');
+      const isCustom = (!isNone && getSetting(activeElementKey) !== '');
+
+      let html = `
+        <!-- Image Management Card -->
+        <div style="background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px;">
+          <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px;">
+            <div style="width: 75px; height: 60px; background: repeating-conic-gradient(#f0f0f0 0% 25%, #fff 0% 50%) 50% / 12px 12px; border: 1px solid #ddd; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;">
+              ${currentSrc ? `<img src="${currentSrc}" crossorigin="anonymous" style="max-width: 100%; max-height: 100%; object-fit: contain;">` : `<span style="font-size: 11px; color: #999; text-align: center;">គ្មានរូប<br>(លុបចេញ)</span>`}
+            </div>
+            <div>
+              <div style="font-weight: bold; font-size: 14px;">${slotInfo.title}</div>
+              <div style="margin-top: 4px;">
+                ${isNone ? '<span style="background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">🔴 លុបចេញ (ទុកកន្លែងទំនេរ)</span>' :
+          (isCustom ? '<span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">🟢 រូបផ្ទាល់ខ្លួន (Custom)</span>' :
+            '<span style="background: #e0f2fe; color: #075985; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">🔵 រូបលំនាំដើម (Default)</span>')}
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="file" id="settings-file-input" accept="image/*" style="display: none;" onchange="handleSettingsImageUpload('${activeElementKey}', this)">
+            <button class="btn btn-primary" onclick="document.getElementById('settings-file-input').click()" style="padding: 6px 14px; font-size: 13px;">
+              📤 ប្ដូររូបថ្មី (Upload)
+            </button>
+            ${isNone ? '' : `
+              <button class="btn btn-danger" onclick="deleteSettingsImage('${activeElementKey}')" style="padding: 6px 12px; font-size: 13px;">
+                🗑️ លុបចេញ
+              </button>
+            `}
+            ${(!isCustom && !isNone) ? '' : `
+              <button class="btn btn-secondary" onclick="resetSettingsImage('${activeElementKey}')" style="padding: 6px 12px; font-size: 13px;">
+                🔄 រូបដើម
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+
+      // Sliders Controls for Dimensions & Zoom
+      html += `
+        <!-- Zoom Slider -->
+        <div class="control-row">
+          <div class="control-label">
+            <span>🔍 Zoom In / Out (Scale)</span>
+            <span class="slider-val" id="val-${activeElementKey}_zoom">${getSetting(activeElementKey + '_zoom')}%</span>
+          </div>
+          <div class="control-slider-wrap">
+            <input type="range" min="30" max="250" value="${getSetting(activeElementKey + '_zoom')}" 
+              oninput="onSettingSliderChange('${activeElementKey}_zoom', this.value, '%')">
+          </div>
+        </div>
+      `;
+
+      if (slotInfo.isPercent) {
+        // Frame width & height in %
+        html += `
+          <div class="control-row">
+            <div class="control-label">
+              <span>↔️ ទទឹង Width (%)</span>
+              <span class="slider-val" id="val-${activeElementKey}_width">${getSetting(activeElementKey + '_width')}%</span>
+            </div>
+            <div class="control-slider-wrap">
+              <input type="range" min="80" max="100" value="${getSetting(activeElementKey + '_width')}" 
+                oninput="onSettingSliderChange('${activeElementKey}_width', this.value, '%')">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>↕️ កម្ពស់ Height (%)</span>
+              <span class="slider-val" id="val-${activeElementKey}_height">${getSetting(activeElementKey + '_height')}%</span>
+            </div>
+            <div class="control-slider-wrap">
+              <input type="range" min="80" max="100" value="${getSetting(activeElementKey + '_height')}" 
+                oninput="onSettingSliderChange('${activeElementKey}_height', this.value, '%')">
+            </div>
+          </div>
+        `;
+      } else {
+        // Elements in px
+        html += `
+          <div class="control-row">
+            <div class="control-label">
+              <span>↔️ ទទឹង Width (px)</span>
+              <span class="slider-val" id="val-${activeElementKey}_width">${getSetting(activeElementKey + '_width')}px</span>
+            </div>
+            <div class="control-slider-wrap">
+              <input type="range" min="40" max="${activeElementKey === 'logo' ? '700' : '350'}" value="${getSetting(activeElementKey + '_width')}" 
+                oninput="onSettingSliderChange('${activeElementKey}_width', this.value, 'px')">
+            </div>
+          </div>
+        `;
+
+        if (slotInfo.hasHeight) {
+          html += `
+            <div class="control-row">
+              <div class="control-label">
+                <span>↕️ កម្ពស់ Height (px)</span>
+                <span class="slider-val" id="val-${activeElementKey}_height">${getSetting(activeElementKey + '_height')}px</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="40" max="250" value="${getSetting(activeElementKey + '_height')}" 
+                  oninput="onSettingSliderChange('${activeElementKey}_height', this.value, 'px')">
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Position Y & X Sliders
+      if (activeElementKey === 'logo') {
+        html += `
+          <div class="control-row">
+            <div class="control-label">
+              <span>🧭 ទីតាំងបញ្ឈរ Top (%)</span>
+              <span class="slider-val" id="val-logo_top">${getSetting('logo_top')}%</span>
+            </div>
+            <div class="control-slider-wrap">
+              <input type="range" min="10" max="90" value="${getSetting('logo_top')}" 
+                oninput="onSettingSliderChange('logo_top', this.value, '%')">
+            </div>
+          </div>
+          <div class="control-row">
+            <div class="control-label">
+              <span>🧭 ទីតាំងផ្តេក Left (%)</span>
+              <span class="slider-val" id="val-logo_left">${getSetting('logo_left')}%</span>
+            </div>
+            <div class="control-slider-wrap">
+              <input type="range" min="10" max="90" value="${getSetting('logo_left')}" 
+                oninput="onSettingSliderChange('logo_left', this.value, '%')">
+            </div>
+          </div>
+        `;
+      } else if (activeElementKey !== 'frame') {
+        // Signatures offset Y and X
+        html += `
+          <div class="control-row">
+            <div class="control-label">
+              <span>🧭 រំកិលឡើងលើ/ចុះក្រោម Y (px)</span>
+              <span class="slider-val" id="val-${activeElementKey}_top">${getSetting(activeElementKey + '_top')}px</span>
+            </div>
+            <div class="control-slider-wrap">
+              <input type="range" min="-120" max="80" value="${getSetting(activeElementKey + '_top')}" 
+                oninput="onSettingSliderChange('${activeElementKey}_top', this.value, 'px')">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>🧭 រំកិលឆ្វេង/ស្ដាំ X (px)</span>
+              <span class="slider-val" id="val-${activeElementKey}_left">${getSetting(activeElementKey + '_left')}px</span>
+            </div>
+            <div class="control-slider-wrap">
+              <input type="range" min="-100" max="100" value="${getSetting(activeElementKey + '_left')}" 
+                oninput="onSettingSliderChange('${activeElementKey}_left', this.value, 'px')">
+            </div>
+          </div>
+        `;
+      }
+
+      // Opacity Slider
+      html += `
+        <div class="control-row">
+          <div class="control-label">
+            <span>🎨 ភាពស្រអាប់ Opacity (%)</span>
+            <span class="slider-val" id="val-${activeElementKey}_opacity">${getSetting(activeElementKey + '_opacity')}%</span>
+          </div>
+          <div class="control-slider-wrap">
+            <input type="range" min="0" max="100" value="${getSetting(activeElementKey + '_opacity')}" 
+              oninput="onSettingSliderChange('${activeElementKey}_opacity', this.value, '%')">
+          </div>
+        </div>
+      `;
+
+      // Blend Mode for signatures
+      if (activeElementKey.startsWith('sign')) {
+        const currentBlend = getSetting(activeElementKey + '_blend') || 'normal';
+        html += `
+          <div class="control-row">
+            <div class="control-label"><span>✨ របៀបលាយពណ៌ Blend Mode</span></div>
+            <select style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Battambang', sans-serif;"
+              onchange="onSettingSliderChange('${activeElementKey}_blend', this.value)">
+              <option value="multiply" ${currentBlend === 'multiply' ? 'selected' : ''}>Multiply (កាត់ផ្ទៃសចេញ - ល្អសម្រាប់ក្រដាស)</option>
+              <option value="normal" ${currentBlend === 'normal' ? 'selected' : ''}>Normal (ធម្មតា)</option>
+            </select>
+          </div>
+        `;
+      }
+
+      // Reset button for this element
+      html += `
+        <div style="margin-top: 20px; text-align: right;">
+          <button class="btn btn-secondary" onclick="resetActiveElementSettings('${activeElementKey}')" style="font-size: 12px; padding: 6px 12px;">
+            🔄 កំណត់ទំហំ/ទីតាំងផ្នែកនេះដូចដើម
+          </button>
+        </div>
+      `;
+
+      panel.innerHTML = html;
+    }
+
+    // --- Interactive Slider Change ---
+    function onSettingSliderChange(key, value, unit = '') {
+      appSettings[key] = value;
+      const valEl = document.getElementById('val-' + key);
+      if (valEl) valEl.textContent = value + unit;
+
+      updateLiveElement(activeElementKey);
+    }
+
+    function updateLiveElement(key) {
+      if (key === 'frame') {
+        const el = document.getElementById('preview-img-frame');
+        if (el) el.style.cssText = generateCertificateElementStyles('frame');
+      } else if (key === 'logo') {
+        const el = document.getElementById('preview-img-logo');
+        if (el) el.style.cssText = generateCertificateElementStyles('logo');
+      } else if (key === 'sign0') {
+        const el = document.getElementById('preview-img-sign0');
+        if (el) el.style.cssText = generateCertificateElementStyles('sign0');
+      } else if (key === 'sign1') {
+        const el = document.getElementById('preview-img-sign1');
+        if (el) el.style.cssText = generateCertificateElementStyles('sign1');
+      } else if (key === 'sign2') {
+        const el = document.getElementById('preview-img-sign2');
+        if (el) el.style.cssText = generateCertificateElementStyles('sign2');
+      } else if (key === 'typography') {
+        const tEl = document.getElementById('preview-title');
+        if (tEl) tEl.style.color = getSetting('title_color');
+        const rEl = document.getElementById('preview-recipient');
+        if (rEl) rEl.style.color = getSetting('name_color');
+        const cEl = document.getElementById('sample-cert');
+        if (cEl) cEl.style.color = getSetting('text_color');
+      }
+    }
+
+    // --- Live Certificate Preview Canvas ---
+    let previewScale = 0.65;
+
+    function renderLiveCertificatePreview() {
+      const container = document.getElementById('live-preview-container');
+      if (!container) return;
+
+      const frameSrc = getImageSrc('frame', './Frame2.png');
+      const logoSrc = getImageSrc('logo', './backLogo.png');
+      const sign2Src = getImageSrc('sign2', './Sign2.png');
+      const sign1Src = getImageSrc('sign1', './Sign1.png');
+      const sign0Src = getImageSrc('sign0', './Sign0.png');
+
+      const titleColor = getSetting('title_color') || '#d32f2f';
+      const nameColor = getSetting('name_color') || '#d32f2f';
+      const textColor = getSetting('text_color') || '#000000';
+
+      const frameStyle = generateCertificateElementStyles('frame');
+      const logoStyle = generateCertificateElementStyles('logo');
+      const sign0Style = generateCertificateElementStyles('sign0');
+      const sign1Style = generateCertificateElementStyles('sign1');
+      const sign2Style = generateCertificateElementStyles('sign2');
+
+      const html = `
+        <div id="sample-cert" class="certificate-container" style="width: 297mm; height: 210mm; background: #fff; position: relative; overflow: hidden; font-family: 'Battambang', sans-serif; box-sizing: border-box; padding: 0; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.35); color: ${textColor};">
+          
+          ${frameSrc ? `<img id="preview-img-frame" src="${frameSrc}" crossorigin="anonymous" style="${frameStyle}">` : ''}
+          ${logoSrc ? `<img id="preview-img-logo" src="${logoSrc}" crossorigin="anonymous" alt="" style="${logoStyle}">` : ''}
+
+          <div style="position: absolute; top: 45mm; bottom: 45mm; left: 34mm; right: 34mm; display: flex; flex-direction: column; z-index: 2;">
+             
+             <!-- Header Row -->
+             <div style="display: flex; justify-content: space-between; font-size: 13.33px; color: ${textColor};">
+                <div style="text-align: center; width: 270px; line-height: 1.5; font-family: 'Moul';">
+                   វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)<br>
+                   ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ
+                </div>
+                <div style="text-align: center; width: 220px; line-height: 1.5; font-family: 'Moul';">
+                   ព្រះរាជាណាចក្រកម្ពុជា<br>
+                   ជាតិ សាសនា ព្រះមហាក្សត្រ<br>
+                   <span style="font-family: Tacteing; font-size: 48px; line-height: 0; display: inline-block; transform: translateY(8px);">6</span>
+                </div>
+             </div>
+             
+             <!-- Main Title -->
+             <div style="text-align: center; margin-top: -15px;">
+                <h1 id="preview-title" style="color: ${titleColor}; font-family: 'Moul'; font-size: 25px; margin: 0px; letter-spacing: 2px;">ប័ណ្ណថ្លែងអំណរគុណ</h1>
+                <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">ព្រះគ្រូចៅអធិការ ថេរានុត្ថេរៈ គណៈកម្មការ វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</p>
+                <p style="font-size: 16px; margin: 0px;">ឃុំសូយោង ស្រុកតាំងគោក ខេត្តកំពង់ធំ</p>
+                <p style="font-family: 'Moul'; font-size: 16px; margin: 0px;">សូមថ្លែងអំណរគុណចំពោះ</p>
+             </div>
+             
+             <!-- Recipient Name -->
+             <div style="text-align: center; margin-bottom: 5px; display: block; width: 100%;">
+                <h2 id="preview-recipient" style="color: ${nameColor}; font-family: 'Moul'; font-size: 16px; margin: 0; padding: 0; display: block; border-bottom: 2px dotted #666; line-height: 1.5;">
+                   ឧបាសិកា កែវ សោភា ព្រមទាំងបុត្រ
+                </h2>
+             </div>
+             
+             <!-- Body Text -->
+             <div style="flex-grow: 1; padding: 0px; display: block; width: 100%;">
+                <div style="display: flex; align-items: baseline; font-size: 18px; margin-bottom: 5px; width: 100%;">
+                   <span style="white-space: nowrap;">ដែលមានសទ្ធាជ្រះថ្លាបានបរិច្ចាគទានជា&nbsp;</span>
+                   <span style="flex-grow: 1; border-bottom: 2px dotted #666; color: ${textColor}; font-family: 'Moul'; font-size: 15px; text-align: center; line-height: 1.5;">បច្ច័យកសាង 2,000,000 រៀល និង បច្ច័យបួន 100,000 រៀល</span>
+                </div>
+                <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0 0 5px 0;">
+                   ដើម្បីរួមចំណែកកសាង <span style="font-family: 'Moul'; font-size: 15px;">វត្តសម្តេចជោតញ្ញាណ (តាំងគោក)</span> ក្នុងព្រះពុទ្ធសាសនា និងសង្គមជាតិផងដែរ។
+                </p>
+                <p style="font-size: 18px; line-height: 1.8; text-align: justify; margin: 0; text-indent: 50px;">
+                   អាស្រ័យហេតុនេះ យើងខ្ញុំ សូមប្រសិទ្ធពរ បវរសួស្តី ជ័យមង្គល មហាប្រសើរ ជូនដល់អស់លោក លោកស្រី និងពុទ្ធបរិស័ទទាំងអស់
+                   សូមបានប្រកបនូវពុទ្ធពរទាំងឡាយ ៤ប្រការគឺ <span style="font-family: 'Moul'; font-size: 15px;">អាយុ វណ្ណៈ សុខៈ និង ពលៈ</span> កុំបីឃ្លៀងឃ្លាតឡើយ។
+                </p>
+                <div style="text-align: center; margin-top: -10px; font-size: 15px; display: grid; justify-items: right;">
+                   <p style="margin: 0;">
+                      ថ្ងៃអាទិត្យ ៦កើត ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស.២៥៧០<br>
+                      ធ្វើនៅវត្តតាំងគោក ថ្ងៃទី១៥ ខែវិច្ឆិកា ឆ្នាំ២០២៦
+                   </p>
+                </div>
+             </div>
+             
+             <!-- Footer Signatures -->
+             <div style="display: flex; justify-content: space-between; margin-top: 0px; padding: 0px; font-size: 14px;">
+                <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
+                   <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">គណៈកម្មការ</p>
+                   ${sign2Src ? `<img id="preview-img-sign2" src="${sign2Src}" crossorigin="anonymous" alt="" style="${sign2Style}">` : ''}
+                </div>
+                <div style="text-align: center; width: 200px; margin-top: -64px; position: relative;">
+                   <p style="margin: 0; font-family: 'Moul'; position: relative; z-index: 2;">អាចារ្យ</p>
+                   ${sign1Src ? `<img id="preview-img-sign1" src="${sign1Src}" crossorigin="anonymous" alt="" style="${sign1Style}">` : ''}
+                </div>
+                <div style="text-align: center; width: 300px; position: relative; margin-top: -64px;">
+                   <p style="margin: 0; font-size: 15px; font-family: 'Moul'; position: relative; z-index: 2;">ព្រះចៅអធិការ</p>
+                   ${sign0Src ? `<img id="preview-img-sign0" src="${sign0Src}" crossorigin="anonymous" alt="" style="${sign0Style}">` : ''}
+                </div>
+             </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+      applyPreviewScale();
+    }
+
+    function applyPreviewScale() {
+      const container = document.getElementById('live-preview-container');
+      const text = document.getElementById('preview-scale-text');
+      if (!container) return;
+
+      container.style.transform = `scale(${previewScale})`;
+      container.style.marginBottom = `${-(793 * (1 - previewScale))}px`;
+      if (text) text.textContent = Math.round(previewScale * 100) + '%';
+    }
+
+    function adjustPreviewScale(delta) {
+      previewScale = Math.max(0.2, Math.min(1.2, previewScale + delta));
+      applyPreviewScale();
+    }
+
+    function fitPreviewScale() {
+      const viewport = document.getElementById('live-preview-viewport');
+      if (viewport) {
+        const availableW = viewport.clientWidth - 40;
+        previewScale = Math.max(0.25, Math.min(0.85, availableW / 1122));
+        applyPreviewScale();
+      }
+    }
+
+    // --- Image Upload & Actions in Settings ---
+    function handleSettingsImageUpload(key, input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      if (!file.type.startsWith('image/')) {
+        showToast('សូមជ្រើសរើស File ដែលជារូបភាព (PNG, JPG, ...)');
+        return;
+      }
+
+      showToast('កំពុង Upload រូបភាព...');
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const base64Data = e.target.result;
+        appSettings[key] = base64Data;
+        localStorage.setItem('appSettings', JSON.stringify(appSettings));
+        renderActiveElementControls();
+        renderLiveCertificatePreview();
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            if (res && res.url) {
+              appSettings[key] = res.url;
+              localStorage.setItem('appSettings', JSON.stringify(appSettings));
+              renderActiveElementControls();
+              renderLiveCertificatePreview();
+            }
+            showToast('រូបភាពត្រូវបានរក្សាទុកដោយជោគជ័យ!');
+          })
+          .withFailureHandler(function (err) {
+            console.warn('Upload notice:', err);
+            showToast('បានរក្សាទុករូបភាព (Local) រួចរាល់!');
+          })
+          .uploadAppImage(key, base64Data, file.name);
+      };
+      reader.readAsDataURL(file);
+      input.value = '';
+    }
+
+    function deleteSettingsImage(key) {
+      if (!confirm('តើអ្នកពិតជាចង់លុបរូបភាពនេះចេញមែនទេ? (ប័ណ្ណនឹងទុកកន្លែងទំនេរសម្រាប់ស៊ីញ៉េដៃផ្ទាល់)')) return;
+
+      appSettings[key] = 'none';
+      localStorage.setItem('appSettings', JSON.stringify(appSettings));
+      renderActiveElementControls();
+      renderLiveCertificatePreview();
+
+      google.script.run
+        .withSuccessHandler(function () {
+          showToast('បានលុបរូបភាពចេញដោយជោគជ័យ!');
+        })
+        .withFailureHandler(function () {
+          showToast('បានលុបរូបភាព (Local) រួចរាល់!');
+        })
+        .deleteAppImage(key);
+    }
+
+    function resetSettingsImage(key) {
+      appSettings[key] = '';
+      localStorage.setItem('appSettings', JSON.stringify(appSettings));
+      renderActiveElementControls();
+      renderLiveCertificatePreview();
+
+      google.script.run
+        .withSuccessHandler(function () {
+          showToast('បានកំណត់យករូបលំនាំដើមវិញជោគជ័យ!');
+        })
+        .withFailureHandler(function () {
+          showToast('បានកំណត់យករូបលំនាំដើមវិញ!');
+        })
+        .resetAppImage(key);
+    }
+
+    function resetActiveElementSettings(key) {
+      if (!confirm('តើអ្នកចង់កំណត់ទំហំ និងទីតាំងរបស់ផ្នែកនេះទៅលំនាំដើមវិញមែនទេ?')) return;
+
+      if (key === 'frame') {
+        appSettings.frame_width = DEFAULT_SETTINGS.frame_width;
+        appSettings.frame_height = DEFAULT_SETTINGS.frame_height;
+        appSettings.frame_zoom = DEFAULT_SETTINGS.frame_zoom;
+        appSettings.frame_opacity = DEFAULT_SETTINGS.frame_opacity;
+      } else if (key === 'logo') {
+        appSettings.logo_width = DEFAULT_SETTINGS.logo_width;
+        appSettings.logo_zoom = DEFAULT_SETTINGS.logo_zoom;
+        appSettings.logo_top = DEFAULT_SETTINGS.logo_top;
+        appSettings.logo_left = DEFAULT_SETTINGS.logo_left;
+        appSettings.logo_opacity = DEFAULT_SETTINGS.logo_opacity;
+      } else if (key === 'sign0') {
+        appSettings.sign0_width = DEFAULT_SETTINGS.sign0_width;
+        appSettings.sign0_zoom = DEFAULT_SETTINGS.sign0_zoom;
+        appSettings.sign0_top = DEFAULT_SETTINGS.sign0_top;
+        appSettings.sign0_left = DEFAULT_SETTINGS.sign0_left;
+        appSettings.sign0_opacity = DEFAULT_SETTINGS.sign0_opacity;
+        appSettings.sign0_blend = DEFAULT_SETTINGS.sign0_blend;
+      } else if (key === 'sign1') {
+        appSettings.sign1_width = DEFAULT_SETTINGS.sign1_width;
+        appSettings.sign1_height = DEFAULT_SETTINGS.sign1_height;
+        appSettings.sign1_zoom = DEFAULT_SETTINGS.sign1_zoom;
+        appSettings.sign1_top = DEFAULT_SETTINGS.sign1_top;
+        appSettings.sign1_left = DEFAULT_SETTINGS.sign1_left;
+        appSettings.sign1_opacity = DEFAULT_SETTINGS.sign1_opacity;
+        appSettings.sign1_blend = DEFAULT_SETTINGS.sign1_blend;
+      } else if (key === 'sign2') {
+        appSettings.sign2_width = DEFAULT_SETTINGS.sign2_width;
+        appSettings.sign2_height = DEFAULT_SETTINGS.sign2_height;
+        appSettings.sign2_zoom = DEFAULT_SETTINGS.sign2_zoom;
+        appSettings.sign2_top = DEFAULT_SETTINGS.sign2_top;
+        appSettings.sign2_left = DEFAULT_SETTINGS.sign2_left;
+        appSettings.sign2_opacity = DEFAULT_SETTINGS.sign2_opacity;
+        appSettings.sign2_blend = DEFAULT_SETTINGS.sign2_blend;
+      }
+
+      localStorage.setItem('appSettings', JSON.stringify(appSettings));
+      renderActiveElementControls();
+      updateLiveElement(key);
+      showToast('បានកំណត់ផ្នែកនេះដូចដើមវិញ!');
+    }
+
+    function resetAllSettingsToDefault() {
+      if (!confirm('តើអ្នកពិតជាចង់កំណត់ការកំណត់រចនាប័ណ្ណទាំងអស់ទៅដូចដើមវិញមែនទេ? (រូបភាពផ្ទាល់ខ្លួននឹងត្រូវដកចេញ)')) return;
+
+      appSettings = Object.assign({}, DEFAULT_SETTINGS);
+      localStorage.setItem('appSettings', JSON.stringify(appSettings));
+
+      saveCurrentSettings();
+      renderActiveElementControls();
+      renderLiveCertificatePreview();
+      showToast('បានកំណត់ការកំណត់ទាំងអស់ដូចដើមវិញ!');
+    }
+
+    function saveCurrentSettings() {
+      const btn = document.getElementById('btn-save-settings');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '⏳ កំពុងរក្សាទុក...';
+      }
+
+      localStorage.setItem('appSettings', JSON.stringify(appSettings));
+
+      google.script.run
+        .withSuccessHandler(function (res) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '💾 រក្សាទុកការកំណត់';
+          }
+          if (res && res.settings) {
+            appSettings = Object.assign({}, appSettings, res.settings);
+            localStorage.setItem('appSettings', JSON.stringify(appSettings));
+          }
+          showToast('🎉 ការកំណត់ទាំងអស់ត្រូវបានរក្សាទុកដោយជោគជ័យ!');
+        })
+        .withFailureHandler(function (err) {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '💾 រក្សាទុកការកំណត់';
+          }
+          console.warn('Backend save notice:', err);
+          showToast('បានរក្សាទុកលើ Browser (Offline/Local) រួចរាល់!');
+        })
+        .saveAllSettings(appSettings);
+    }
   </script>
 </body>
 
