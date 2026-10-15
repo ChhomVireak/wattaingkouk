@@ -500,4 +500,12 @@ function saveAllSettings(settingsObject) {
   }
 }
 
+// មុខងារសម្រាប់ចុច Run (ដំណើរការ) លើកដំបូងក្នុង Apps Script ដើម្បីផ្ដល់សិទ្ធិ Google Drive (Authorize)
+function authorizeDriveAccess() {
+  DriveApp.getRootFolder();
+  SpreadsheetApp.getActiveSpreadsheet();
+  Logger.log("✅ Google Drive Authorization Successful!");
+}
+
+
 
