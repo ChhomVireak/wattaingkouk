@@ -60,7 +60,7 @@
       margin: 0 0 10px 0;
       font-size: 28px;
       line-height: 1.6;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); */
     }
 
     .subtitle {
@@ -2349,6 +2349,10 @@
       frame_height: 100,
       frame_zoom: 100,
       frame_opacity: 100,
+      frame_hue: 0,
+      frame_saturate: 100,
+      frame_brightness: 100,
+      frame_grayscale: 'false',
 
       // Logo Watermark
       logo: '',
@@ -2462,7 +2466,16 @@
         const w = parseFloat(getSetting('frame_width')) || 100;
         const h = parseFloat(getSetting('frame_height')) || 100;
         const op = (getSetting('frame_opacity') !== '' ? parseFloat(getSetting('frame_opacity')) : 100) / 100;
-        return `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${zoom}); width: ${w}%; height: ${h}%; object-fit: fill; z-index: 1; opacity: ${op}; pointer-events: none;`;
+        const hue = parseFloat(getSetting('frame_hue')) || 0;
+        const sat = (getSetting('frame_saturate') !== '' ? parseFloat(getSetting('frame_saturate')) : 100);
+        const bri = (getSetting('frame_brightness') !== '' ? parseFloat(getSetting('frame_brightness')) : 100);
+        const isGray = (getSetting('frame_grayscale') === 'true' || getSetting('frame_grayscale') === true);
+
+        let filterStr = isGray
+          ? `grayscale(100%) brightness(${bri}%) contrast(115%)`
+          : `hue-rotate(${hue}deg) saturate(${sat}%) brightness(${bri}%)`;
+
+        return `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(${zoom}); width: ${w}%; height: ${h}%; object-fit: fill; z-index: 1; opacity: ${op}; filter: ${filterStr}; -webkit-filter: ${filterStr}; pointer-events: none;`;
       }
       if (key === 'logo') {
         const zoom = (parseFloat(getSetting('logo_zoom')) || 100) / 100;
@@ -2656,6 +2669,57 @@
             <div class="control-slider-wrap">
               <input type="range" min="80" max="100" value="${getSetting(activeElementKey + '_height')}" 
                 oninput="onSettingSliderChange('${activeElementKey}_height', this.value, '%')">
+            </div>
+          </div>
+
+          <!-- Frame Color Presets and Sliders -->
+          <div style="background: #f1f5f9; padding: 14px; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border);">
+            <div style="font-weight: bold; font-size: 13px; color: var(--primary); margin-bottom: 10px;">🎨 ជ្រើសរើសពណ៌ស៊ុមប័ណ្ណ (Color Presets)</div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;">
+              <button type="button" class="btn btn-secondary" onclick="setFrameColorPreset(0, 100, 100, false)" style="padding: 5px 11px; font-size: 12px; background: #fffbe8; border-color: #d4b106; font-weight: bold;">🟡 មាស (ដើម)</button>
+              <button type="button" class="btn btn-secondary" onclick="setFrameColorPreset(320, 140, 95, false)" style="padding: 5px 11px; font-size: 12px; background: #fff1f0; border-color: #ff4d4f; color: #a8071a; font-weight: bold;">🔴 ក្រហម</button>
+              <button type="button" class="btn btn-secondary" onclick="setFrameColorPreset(210, 130, 100, false)" style="padding: 5px 11px; font-size: 12px; background: #e6f7ff; border-color: #1890ff; color: #0050b3; font-weight: bold;">🔵 ខៀវ</button>
+              <button type="button" class="btn btn-secondary" onclick="setFrameColorPreset(85, 120, 95, false)" style="padding: 5px 11px; font-size: 12px; background: #f6ffed; border-color: #52c41a; color: #237804; font-weight: bold;">🟢 បៃតង</button>
+              <button type="button" class="btn btn-secondary" onclick="setFrameColorPreset(275, 130, 100, false)" style="padding: 5px 11px; font-size: 12px; background: #f9f0ff; border-color: #9254de; color: #531dab; font-weight: bold;">🟣 ស្វាយ</button>
+              <button type="button" class="btn btn-secondary" onclick="setFrameColorPreset(30, 140, 105, false)" style="padding: 5px 11px; font-size: 12px; background: #fff7e6; border-color: #fa8c16; color: #873800; font-weight: bold;">🟠 ទឹកក្រូច</button>
+              <button type="button" class="btn btn-secondary" onclick="setFrameColorPreset(0, 0, 115, true)" style="padding: 5px 11px; font-size: 12px; background: #f0f2f5; border-color: #bfbfbf; color: #595959; font-weight: bold;">⚪ ប្រាក់ (សខ្មៅ)</button>
+            </div>
+
+            <!-- Custom Hue Slider with Rainbow Track -->
+            <div class="control-row" style="margin-bottom: 10px;">
+              <div class="control-label" style="margin-bottom: 4px;">
+                <span style="font-size: 12px;">🌈 ប្ដូរពណ៌តាមចិត្ត (Hue Color)</span>
+                <span class="slider-val" id="val-frame_hue">${getSetting('frame_hue') || 0}°</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="0" max="360" value="${getSetting('frame_hue') || 0}" 
+                  style="background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); height: 8px; border-radius: 4px; accent-color: #ffffff;"
+                  oninput="onSettingSliderChange('frame_hue', this.value, '°'); onSettingSliderChange('frame_grayscale', 'false');">
+              </div>
+            </div>
+
+            <!-- Saturation Slider -->
+            <div class="control-row" style="margin-bottom: 10px;">
+              <div class="control-label" style="margin-bottom: 4px;">
+                <span style="font-size: 12px;">✨ ភាពដិតនៃពណ៌ (Saturation)</span>
+                <span class="slider-val" id="val-frame_saturate">${getSetting('frame_saturate') !== '' ? getSetting('frame_saturate') : 100}%</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="0" max="200" value="${getSetting('frame_saturate') !== '' ? getSetting('frame_saturate') : 100}" 
+                  oninput="onSettingSliderChange('frame_saturate', this.value, '%')">
+              </div>
+            </div>
+
+            <!-- Brightness Slider -->
+            <div class="control-row" style="margin-bottom: 0px;">
+              <div class="control-label" style="margin-bottom: 4px;">
+                <span style="font-size: 12px;">☀️ ពន្លឺស៊ុម (Brightness)</span>
+                <span class="slider-val" id="val-frame_brightness">${getSetting('frame_brightness') !== '' ? getSetting('frame_brightness') : 100}%</span>
+              </div>
+              <div class="control-slider-wrap">
+                <input type="range" min="50" max="150" value="${getSetting('frame_brightness') !== '' ? getSetting('frame_brightness') : 100}" 
+                  oninput="onSettingSliderChange('frame_brightness', this.value, '%')">
+              </div>
             </div>
           </div>
         `;
@@ -3016,6 +3080,16 @@
         .resetAppImage(key);
     }
 
+    function setFrameColorPreset(hue, sat, bri, isGray) {
+      appSettings['frame_hue'] = hue;
+      appSettings['frame_saturate'] = sat;
+      appSettings['frame_brightness'] = bri;
+      appSettings['frame_grayscale'] = isGray ? 'true' : 'false';
+      localStorage.setItem('appSettings', JSON.stringify(appSettings));
+      renderActiveElementControls();
+      updateLiveElement('frame');
+    }
+
     function resetActiveElementSettings(key) {
       if (!confirm('តើអ្នកចង់កំណត់ទំហំ និងទីតាំងរបស់ផ្នែកនេះទៅលំនាំដើមវិញមែនទេ?')) return;
 
@@ -3024,6 +3098,10 @@
         appSettings.frame_height = DEFAULT_SETTINGS.frame_height;
         appSettings.frame_zoom = DEFAULT_SETTINGS.frame_zoom;
         appSettings.frame_opacity = DEFAULT_SETTINGS.frame_opacity;
+        appSettings.frame_hue = DEFAULT_SETTINGS.frame_hue;
+        appSettings.frame_saturate = DEFAULT_SETTINGS.frame_saturate;
+        appSettings.frame_brightness = DEFAULT_SETTINGS.frame_brightness;
+        appSettings.frame_grayscale = DEFAULT_SETTINGS.frame_grayscale;
       } else if (key === 'logo') {
         appSettings.logo_width = DEFAULT_SETTINGS.logo_width;
         appSettings.logo_zoom = DEFAULT_SETTINGS.logo_zoom;
